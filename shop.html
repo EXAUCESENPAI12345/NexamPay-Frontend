@@ -1,0 +1,3004 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta name="theme-color" content="#050505">
+
+    <title>Boutique — NexamPay</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="nexampay-core.js"></script>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --red: #e50914;
+            --red-light: #ff3038;
+            --red-dark: #a80008;
+            --black: #050505;
+            --bg: #080808;
+            --card: #111111;
+            --card-2: #171717;
+            --text: #f5f5f5;
+            --muted: #8f8f8f;
+            --border: rgba(255,255,255,.08);
+            --green: #20c77a;
+        }
+
+        html {
+            background: var(--black);
+        }
+
+        body {
+            min-height: 100vh;
+            padding-bottom: 92px;
+
+            background:
+                radial-gradient(
+                    circle at 90% 0%,
+                    rgba(229,9,20,.08),
+                    transparent 30%
+                ),
+                var(--bg);
+
+            color: var(--text);
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: 0;
+            outline: 0;
+            cursor: pointer;
+            color: inherit;
+        }
+
+        /* =========================
+           HEADER
+        ========================== */
+
+        .header {
+            height: 70px;
+            padding: 0 15px;
+
+            display: flex;
+            align-items: center;
+
+            position: relative;
+        }
+
+        .back-button {
+            width: 43px;
+            height: 43px;
+
+            border-radius: 14px;
+
+            background: var(--card);
+            border: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .back-button svg {
+            width: 22px;
+            height: 22px;
+        }
+
+        .header-title {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .header-logo {
+            width: 40px;
+            height: 40px;
+
+            object-fit: contain;
+
+            margin-left: auto;
+        }
+
+        /* =========================
+           CONTENT
+        ========================== */
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+
+            margin: auto;
+
+            padding: 0 15px 25px;
+        }
+
+        .page-heading {
+            margin: 7px 0 18px;
+        }
+
+        .page-heading small {
+            color: var(--red-light);
+
+            font-size: 10px;
+            font-weight: 750;
+
+            text-transform: uppercase;
+            letter-spacing: .8px;
+        }
+
+        .page-heading h1 {
+            margin-top: 5px;
+
+            font-size: 27px;
+            font-weight: 850;
+
+            letter-spacing: -.7px;
+        }
+
+        .page-heading p {
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           INFO
+        ========================== */
+
+        .private-info {
+            display: flex;
+            align-items: center;
+
+            gap: 13px;
+
+            padding: 17px;
+
+            margin-bottom: 16px;
+
+            border-radius: 20px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(229,9,20,.12),
+                    rgba(229,9,20,.025)
+                );
+
+            border:
+                1px solid
+                rgba(229,9,20,.28);
+        }
+
+        .private-info-icon {
+            width: 44px;
+            height: 44px;
+
+            min-width: 44px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(229,9,20,.12);
+
+            color: var(--red-light);
+        }
+
+        .private-info-icon svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        .private-info-title {
+            font-size: 13px;
+            font-weight: 750;
+        }
+
+        .private-info-text {
+            margin-top: 4px;
+
+            color: #999;
+
+            font-size: 10px;
+            line-height: 1.5;
+        }
+
+        /* =========================
+           SEARCH
+        ========================== */
+
+        .search-box {
+            height: 53px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 10px;
+
+            padding: 0 15px;
+
+            margin-bottom: 13px;
+
+            border-radius: 17px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+        }
+
+        .search-box svg {
+            width: 21px;
+            height: 21px;
+
+            color: #777;
+
+            min-width: 21px;
+        }
+
+        .search-input {
+            width: 100%;
+
+            border: 0;
+            outline: 0;
+
+            background: transparent;
+
+            color: white;
+
+            font-size: 13px;
+        }
+
+        .search-input::placeholder {
+            color: #555;
+        }
+
+        /* =========================
+           CATEGORIES
+        ========================== */
+
+        .categories {
+            display: flex;
+
+            gap: 8px;
+
+            overflow-x: auto;
+
+            scrollbar-width: none;
+
+            margin-bottom: 17px;
+        }
+
+        .categories::-webkit-scrollbar {
+            display: none;
+        }
+
+        .category {
+            flex: 0 0 auto;
+
+            min-height: 39px;
+
+            padding: 0 16px;
+
+            border-radius: 13px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            color: #999;
+
+            font-size: 11px;
+            font-weight: 650;
+        }
+
+        .category.active {
+            background: var(--red);
+
+            border-color: var(--red);
+
+            color: white;
+        }
+
+        /* =========================
+           PRODUCTS
+        ========================== */
+
+        .products-grid {
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+
+            gap: 11px;
+        }
+
+        .product-card {
+            min-width: 0;
+
+            padding: 12px;
+
+            border-radius: 19px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #151515,
+                    #0e0e0e
+                );
+
+            border: 1px solid var(--border);
+
+            overflow: hidden;
+
+            animation: productIn .25s ease;
+        }
+
+        @keyframes productIn {
+            from {
+                opacity: 0;
+                transform: translateY(6px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-image-box {
+            width: 100%;
+            aspect-ratio: 1 / .78;
+
+            border-radius: 15px;
+
+            background: #0a0a0a;
+
+            border: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+        }
+
+        .product-info {
+            padding-top: 11px;
+        }
+
+        .product-name {
+            font-size: 13px;
+            font-weight: 750;
+
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .product-description {
+            min-height: 29px;
+
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-size: 9px;
+            line-height: 1.45;
+
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+
+            overflow: hidden;
+        }
+
+        .product-bottom {
+            margin-top: 9px;
+        }
+
+        .product-price {
+            font-size: 15px;
+            font-weight: 800;
+        }
+
+        .product-currency {
+            font-size: 9px;
+            color: #999;
+            font-weight: 600;
+        }
+
+        .product-stock {
+            margin-top: 4px;
+
+            color: var(--green);
+
+            font-size: 9px;
+            font-weight: 650;
+        }
+
+        .product-stock.unavailable {
+            color: #777;
+        }
+
+        .buy-button {
+            width: 100%;
+
+            min-height: 42px;
+
+            margin-top: 10px;
+
+            border-radius: 12px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--red-light),
+                    var(--red-dark)
+                );
+
+            color: white;
+
+            font-size: 11px;
+            font-weight: 750;
+        }
+
+        .buy-button:disabled {
+            opacity: .35;
+            cursor: not-allowed;
+        }
+
+        /* =========================
+           EMPTY / LOADING
+        ========================== */
+
+        .state-card {
+            grid-column: 1 / -1;
+
+            min-height: 230px;
+
+            padding: 30px 20px;
+
+            border-radius: 20px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+        }
+
+        .state-icon {
+            width: 58px;
+            height: 58px;
+
+            margin-bottom: 15px;
+
+            border-radius: 18px;
+
+            background:
+                rgba(229,9,20,.08);
+
+            color: var(--red-light);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .state-icon svg {
+            width: 28px;
+            height: 28px;
+        }
+
+        .state-title {
+            font-size: 15px;
+            font-weight: 750;
+        }
+
+        .state-text {
+            max-width: 300px;
+
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 10px;
+            line-height: 1.55;
+        }
+
+        .loader {
+            width: 30px;
+            height: 30px;
+
+            border-radius: 50%;
+
+            border:
+                3px solid
+                rgba(255,255,255,.08);
+
+            border-top-color: var(--red);
+
+            animation:
+                spin .8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* =========================
+           ORDERS
+        ========================== */
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin: 25px 0 11px;
+        }
+
+        .section-title h2 {
+            font-size: 17px;
+            font-weight: 800;
+        }
+
+        .orders-link {
+            color: var(--red-light);
+
+            font-size: 10px;
+            font-weight: 700;
+
+            background: transparent;
+        }
+
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+
+            gap: 9px;
+        }
+
+        .order-card {
+            padding: 14px;
+
+            border-radius: 17px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+        }
+
+        .order-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 10px;
+        }
+
+        .order-name {
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .order-status {
+            padding: 5px 8px;
+
+            border-radius: 8px;
+
+            background:
+                rgba(229,9,20,.09);
+
+            color: var(--red-light);
+
+            font-size: 8px;
+            font-weight: 700;
+        }
+
+        .order-bottom {
+            display: flex;
+            justify-content: space-between;
+
+            margin-top: 9px;
+
+            color: var(--muted);
+
+            font-size: 9px;
+        }
+
+        .orders-empty {
+            min-height: 130px;
+
+            padding: 20px;
+
+            border-radius: 18px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+
+            display: flex;
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+        }
+
+        .orders-empty svg {
+            width: 30px;
+            height: 30px;
+
+            color: #555;
+
+            margin-bottom: 9px;
+        }
+
+        .orders-empty strong {
+            font-size: 12px;
+        }
+
+        .orders-empty span {
+            margin-top: 4px;
+
+            color: var(--muted);
+
+            font-size: 9px;
+        }
+
+        /* =========================
+           PURCHASE MODAL
+        ========================== */
+
+        .modal {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 500;
+
+            display: none;
+
+            align-items: flex-end;
+
+            background:
+                rgba(0,0,0,.72);
+
+            backdrop-filter: blur(8px);
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            width: 100%;
+
+            max-width: 600px;
+
+            margin: auto auto 0;
+
+            padding: 21px 17px
+                     calc(20px + env(safe-area-inset-bottom));
+
+            border-radius:
+                25px 25px 0 0;
+
+            background: #111;
+
+            border-top:
+                1px solid var(--border);
+
+            animation:
+                modalIn .25s ease;
+        }
+
+        @keyframes modalIn {
+            from {
+                transform: translateY(100%);
+            }
+
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-handle {
+            width: 40px;
+            height: 4px;
+
+            margin: 0 auto 19px;
+
+            border-radius: 20px;
+
+            background: #333;
+        }
+
+        .modal-title {
+            font-size: 19px;
+            font-weight: 800;
+        }
+
+        .modal-text {
+            margin-top: 6px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .modal-summary {
+            margin-top: 17px;
+
+            padding: 15px;
+
+            border-radius: 17px;
+
+            background: #090909;
+
+            border: 1px solid var(--border);
+        }
+
+        .modal-row {
+            display: flex;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 6px 0;
+
+            color: #999;
+
+            font-size: 11px;
+        }
+
+        .modal-row strong {
+            color: white;
+        }
+
+        .modal-row.total {
+            margin-top: 7px;
+
+            padding-top: 12px;
+
+            border-top: 1px solid var(--border);
+        }
+
+        .modal-row.total strong {
+            color: var(--red-light);
+
+            font-size: 15px;
+        }
+
+        .modal-actions {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 9px;
+
+            margin-top: 15px;
+        }
+
+        .modal-button {
+            min-height: 52px;
+
+            border-radius: 15px;
+
+            background: #1a1a1a;
+
+            border: 1px solid var(--border);
+
+            color: #aaa;
+
+            font-size: 12px;
+
+            font-weight: 700;
+        }
+
+        .modal-button.primary {
+            background: var(--red);
+
+            border-color: var(--red);
+
+            color: white;
+        }
+
+        .modal-button:disabled {
+            opacity: .4;
+        }
+
+        /* =========================
+           SUCCESS
+        ========================== */
+
+        .success-screen {
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 600;
+
+            display: none;
+
+            align-items: center;
+            justify-content: center;
+
+            padding: 25px;
+
+            background:
+                radial-gradient(
+                    circle at 50% 30%,
+                    rgba(229,9,20,.12),
+                    transparent 35%
+                ),
+                #050505;
+        }
+
+        .success-screen.active {
+            display: flex;
+        }
+
+        .success-content {
+            width: 100%;
+            max-width: 380px;
+
+            text-align: center;
+        }
+
+        .success-logo {
+            width: 80px;
+            height: 80px;
+
+            object-fit: contain;
+
+            margin-bottom: 23px;
+        }
+
+        .success-icon {
+            width: 70px;
+            height: 70px;
+
+            margin: auto auto 19px;
+
+            border-radius: 23px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background:
+                rgba(229,9,20,.09);
+
+            color: var(--red-light);
+        }
+
+        .success-icon svg {
+            width: 35px;
+            height: 35px;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 850;
+        }
+
+        .success-text {
+            margin-top: 8px;
+
+            color: var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+        .success-reference {
+            margin-top: 20px;
+
+            padding: 14px;
+
+            border-radius: 16px;
+
+            background: var(--card);
+
+            border: 1px solid var(--border);
+        }
+
+        .success-reference small {
+            color: var(--muted);
+
+            font-size: 9px;
+        }
+
+        .success-reference strong {
+            display: block;
+
+            margin-top: 4px;
+
+            font-size: 13px;
+        }
+
+        /* =========================
+           NAVIGATION
+        ========================== */
+
+        .bottom-nav {
+            position: fixed;
+
+            z-index: 100;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            min-height: 78px;
+
+            padding:
+                5px 6px
+                env(safe-area-inset-bottom);
+
+            display: flex;
+            align-items: center;
+
+            background:
+                rgba(7,7,7,.97);
+
+            border-top:
+                1px solid var(--border);
+
+            backdrop-filter: blur(18px);
+        }
+
+        .nav-item {
+            flex: 1;
+
+            height: 67px;
+
+            background: transparent;
+
+            color: #707070;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 5px;
+
+            font-size: 10px;
+            font-weight: 550;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item.active {
+            color: var(--red);
+        }
+
+        .nav-item.active svg {
+            stroke-width: 2.5;
+        }
+
+        /* =========================
+           TOAST
+        ========================== */
+
+        .toast {
+            position: fixed;
+
+            z-index: 900;
+
+            left: 50%;
+            bottom: 92px;
+
+            transform:
+                translate(-50%, 15px);
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            padding: 11px 16px;
+
+            border-radius: 12px;
+
+            background: #202020;
+
+            border: 1px solid var(--border);
+
+            color: white;
+
+            font-size: 11px;
+
+            white-space: nowrap;
+
+            transition: .25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+
+            transform:
+                translate(-50%, 0);
+        }
+
+        @media (max-width: 360px) {
+
+            .products-grid {
+                gap: 8px;
+            }
+
+            .product-card {
+                padding: 9px;
+            }
+
+            .product-name {
+                font-size: 12px;
+            }
+
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <!-- HEADER -->
+
+    <header class="header">
+
+        <button
+            id="backButton"
+            class="back-button"
+            aria-label="Retour">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2.2"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <path d="M15 18l-6-6 6-6"/>
+
+            </svg>
+
+        </button>
+
+
+        <h1 class="header-title">
+            Boutique
+        </h1>
+
+
+        <img
+            src="logo.png"
+            alt="NexamPay"
+            class="header-logo"
+        >
+
+    </header>
+
+
+    <main class="container">
+
+
+        <!-- TITRE -->
+
+        <div class="page-heading">
+
+            <small>
+                NexamPay
+            </small>
+
+            <h1>
+                Boutique
+            </h1>
+
+            <p>
+                Découvrez les produits disponibles
+                dans la Boutique NexamPay.
+            </p>
+
+        </div>
+
+
+        <!-- VALIDATION PRIVÉE -->
+
+        <div class="private-info">
+
+            <div class="private-info-icon">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M12 3l8 4v5c0 4.5-3 7.7-8 9-5-1.3-8-4.5-8-9V7l8-4z"/>
+
+                    <path d="M8.5 12l2.2 2.2 4.8-5"/>
+
+                </svg>
+
+            </div>
+
+
+            <div>
+
+                <div class="private-info-title">
+                    Validation en privé
+                </div>
+
+                <div class="private-info-text">
+                    Les produits et commandes sont gérés
+                    par l'administration. Après votre achat,
+                    votre commande sera validée en privé
+                    par l'administrateur.
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- RECHERCHE -->
+
+        <div class="search-box">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.8"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <circle cx="11"
+                        cy="11"
+                        r="7"/>
+
+                <path d="M16.5 16.5L21 21"/>
+
+            </svg>
+
+
+            <input
+                id="searchInput"
+                class="search-input"
+                type="search"
+                placeholder="Rechercher un produit..."
+                autocomplete="off"
+            >
+
+        </div>
+
+
+        <!-- CATÉGORIES -->
+
+        <div
+            id="categories"
+            class="categories">
+
+            <button
+                class="category active"
+                data-category="all">
+
+                Tous
+
+            </button>
+
+        </div>
+
+
+        <!-- PRODUITS -->
+
+        <section
+            id="productsGrid"
+            class="products-grid">
+
+            <div class="state-card">
+
+                <div class="loader"></div>
+
+                <div
+                    class="state-title"
+                    style="margin-top:15px;">
+
+                    Chargement
+
+                </div>
+
+                <div class="state-text">
+                    Chargement des produits disponibles.
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- COMMANDES -->
+
+        <div class="section-title">
+
+            <h2>
+                Mes commandes
+            </h2>
+
+            <button
+                id="refreshOrders"
+                class="orders-link">
+
+                Actualiser
+
+            </button>
+
+        </div>
+
+
+        <section id="ordersList"
+                 class="orders-list">
+
+            <div class="orders-empty">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M6 8h12l1 13H5L6 8z"/>
+
+                    <path d="M9 8a3 3 0 0 1 6 0"/>
+
+                </svg>
+
+                <strong>
+                    Chargement des commandes
+                </strong>
+
+                <span>
+                    Vos commandes apparaîtront ici.
+                </span>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- MODAL ACHAT -->
+
+    <section
+        id="purchaseModal"
+        class="modal">
+
+        <div class="modal-content">
+
+            <div class="modal-handle"></div>
+
+
+            <h2 class="modal-title">
+                Confirmer la commande
+            </h2>
+
+
+            <p class="modal-text">
+                Votre commande sera envoyée à
+                l'administration pour validation privée.
+            </p>
+
+
+            <div class="modal-summary">
+
+                <div class="modal-row">
+
+                    <span>
+                        Produit
+                    </span>
+
+                    <strong id="modalProduct">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="modal-row">
+
+                    <span>
+                        Prix
+                    </span>
+
+                    <strong id="modalPrice">
+                        —
+                    </strong>
+
+                </div>
+
+
+                <div class="modal-row total">
+
+                    <span>
+                        Total
+                    </span>
+
+                    <strong id="modalTotal">
+                        —
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <div class="modal-actions">
+
+                <button
+                    id="cancelPurchase"
+                    class="modal-button">
+
+                    Annuler
+
+                </button>
+
+
+                <button
+                    id="confirmPurchase"
+                    class="modal-button primary">
+
+                    Confirmer
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- SUCCÈS -->
+
+    <section
+        id="successScreen"
+        class="success-screen">
+
+        <div class="success-content">
+
+            <img
+                src="logo.png"
+                alt="NexamPay"
+                class="success-logo"
+            >
+
+
+            <div class="success-icon">
+
+                <svg viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="1.8"
+                     stroke-linecap="round"
+                     stroke-linejoin="round">
+
+                    <path d="M5 12l4 4L19 6"/>
+
+                </svg>
+
+            </div>
+
+
+            <h2 class="success-title">
+                Commande envoyée
+            </h2>
+
+
+            <p class="success-text">
+                Votre commande a été enregistrée.
+                Elle est maintenant en attente de validation
+                privée par l'administration.
+            </p>
+
+
+            <div class="success-reference">
+
+                <small>
+                    Référence de commande
+                </small>
+
+                <strong id="successReference">
+                    —
+                </strong>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- NAVIGATION -->
+
+    <nav class="bottom-nav">
+
+        <!-- ACCUEIL -->
+
+        <button
+            id="homeNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <path d="M3 10.5L12 3l9 7.5"/>
+                <path d="M5 9.5V21h14V9.5"/>
+                <path d="M9 21v-6h6v6"/>
+
+            </svg>
+
+            <span>
+                Accueil
+            </span>
+
+        </button>
+
+
+        <!-- DÉPÔT -->
+
+        <button
+            id="depositNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <rect x="3"
+                      y="5"
+                      width="18"
+                      height="14"
+                      rx="2"/>
+
+                <path d="M12 9v6"/>
+                <path d="M9 12h6"/>
+
+            </svg>
+
+            <span>
+                Dépôt
+            </span>
+
+        </button>
+
+
+        <!-- RETRAIT -->
+
+        <button
+            id="withdrawNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <rect x="3"
+                      y="5"
+                      width="18"
+                      height="14"
+                      rx="2"/>
+
+                <path d="M12 8v8"/>
+                <path d="M9 13l3 3 3-3"/>
+
+            </svg>
+
+            <span>
+                Retrait
+            </span>
+
+        </button>
+
+
+        <!-- BOUTIQUE -->
+
+        <button
+            id="shopNav"
+            class="nav-item active">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <path d="M4 9h16"/>
+                <path d="M5 9l1-5h12l1 5"/>
+                <path d="M5 9v10h14V9"/>
+                <path d="M9 19v-5h6v5"/>
+
+                <path d="M4 9a3 3 0 0 0 6 0"/>
+                <path d="M10 9a3 3 0 0 0 6 0"/>
+                <path d="M16 9a3 3 0 0 0 4 0"/>
+
+            </svg>
+
+            <span>
+                Boutique
+            </span>
+
+        </button>
+
+
+        <!-- PARAMÈTRES -->
+
+        <button
+            id="settingsNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <circle cx="12"
+                        cy="12"
+                        r="3"/>
+
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.7-1.7.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H6.8v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V4.8h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1v2.4h-.1a1.7 1.7 0 0 0-1.6 1z"/>
+
+            </svg>
+
+            <span>
+                Paramètres
+            </span>
+
+        </button>
+
+    </nav>
+
+
+    <div
+        id="toast"
+        class="toast">
+    </div>
+
+
+    <script>
+
+        /* =========================================
+           TELEGRAM
+        ========================================= */
+
+        const tg =
+            window.Telegram?.WebApp || null;
+
+        if (tg) {
+            tg.ready();
+            tg.expand();
+        }
+
+
+        /* =========================================
+           API
+        ========================================= */
+
+        const API = {
+            products: "/api/shop/products",
+            orders: "/api/shop/orders"
+        };
+
+
+        /* =========================================
+           ÉTAT
+        ========================================= */
+
+        const shopState = {
+
+            products: [],
+
+            orders: [],
+
+            category: "all",
+
+            search: "",
+
+            selectedProduct: null,
+
+            loading: false
+
+        };
+
+
+        /* =========================================
+           ÉLÉMENTS
+        ========================================= */
+
+        const productsGrid =
+            document.getElementById(
+                "productsGrid"
+            );
+
+
+        const categories =
+            document.getElementById(
+                "categories"
+            );
+
+
+        const searchInput =
+            document.getElementById(
+                "searchInput"
+            );
+
+
+        const purchaseModal =
+            document.getElementById(
+                "purchaseModal"
+            );
+
+
+        /* =========================================
+           AUTH TELEGRAM
+        ========================================= */
+
+        function authHeaders() {
+
+            return {
+                "Content-Type":
+                    "application/json",
+
+                "Authorization":
+                    `Telegram ${tg?.initData || ""}`,
+                "X-Telegram-Init-Data":
+                    tg?.initData || ""
+            };
+
+        }
+
+
+        /* =========================================
+           FORMAT
+        ========================================= */
+
+        function formatMoney(
+            value,
+            currency = "FCFA"
+        ) {
+
+            const number =
+                Number(value) || 0;
+
+
+            return `${number.toLocaleString("fr-FR")} ${currency}`;
+
+        }
+
+
+        /* =========================================
+           ÉCHAPPER HTML
+        ========================================= */
+
+        function escapeHtml(value) {
+
+            return String(value ?? "")
+                .replace(
+                    /&/g,
+                    "&amp;"
+                )
+                .replace(
+                    /</g,
+                    "&lt;"
+                )
+                .replace(
+                    />/g,
+                    "&gt;"
+                )
+                .replace(
+                    /"/g,
+                    "&quot;"
+                )
+                .replace(
+                    /'/g,
+                    "&#039;"
+                );
+
+        }
+
+
+        /* =========================================
+           CHARGEMENT PRODUITS
+        ========================================= */
+
+        async function loadProducts() {
+
+            shopState.loading = true;
+
+            renderLoading();
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API.products,
+                        {
+                            method: "GET",
+                            headers:
+                                authHeaders()
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        "products_request_failed"
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                shopState.products =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            Array.isArray(
+                                data.products
+                            )
+                                ? data.products
+                                : []
+                        );
+
+
+                renderCategories();
+
+                renderProducts();
+
+
+            } catch (error) {
+
+                renderError();
+
+            } finally {
+
+                shopState.loading = false;
+
+            }
+
+        }
+
+
+        /* =========================================
+           CATÉGORIES
+        ========================================= */
+
+        function renderCategories() {
+
+            const existing =
+                categories.querySelectorAll(
+                    ".category:not([data-category='all'])"
+                );
+
+
+            existing.forEach(
+                element => element.remove()
+            );
+
+
+            const categoryMap =
+                new Map();
+
+
+            shopState.products.forEach(
+                product => {
+
+                    if (
+                        product.category_id !== undefined &&
+                        product.category_name
+                    ) {
+
+                        categoryMap.set(
+                            product.category_id,
+                            product.category_name
+                        );
+
+                    }
+
+                }
+            );
+
+
+            categoryMap.forEach(
+                (name, id) => {
+
+                    const button =
+                        document.createElement(
+                            "button"
+                        );
+
+
+                    button.className =
+                        "category";
+
+
+                    button.dataset.category =
+                        String(id);
+
+
+                    button.textContent =
+                        name;
+
+
+                    button.addEventListener(
+                        "click",
+                        () => {
+
+                            shopState.category =
+                                String(id);
+
+
+                            updateCategoryButtons();
+
+                            renderProducts();
+
+                        }
+                    );
+
+
+                    categories.appendChild(
+                        button
+                    );
+
+                }
+            );
+
+
+            updateCategoryButtons();
+
+        }
+
+
+        function updateCategoryButtons() {
+
+            categories
+                .querySelectorAll(
+                    ".category"
+                )
+                .forEach(button => {
+
+                    button.classList.toggle(
+                        "active",
+                        button.dataset.category ===
+                        shopState.category
+                    );
+
+                });
+
+        }
+
+
+        /* =========================================
+           FILTRAGE
+        ========================================= */
+
+        function getFilteredProducts() {
+
+            const query =
+                shopState.search
+                    .trim()
+                    .toLowerCase();
+
+
+            return shopState.products.filter(
+                product => {
+
+                    const activeCategory =
+                        shopState.category ===
+                        "all" ||
+                        String(
+                            product.category_id
+                        ) ===
+                        shopState.category;
+
+
+                    const searchable =
+                        `
+                        ${product.name || ""}
+                        ${product.description || ""}
+                        ${product.category_name || ""}
+                        `.toLowerCase();
+
+
+                    const matchesSearch =
+                        !query ||
+                        searchable.includes(
+                            query
+                        );
+
+
+                    return (
+                        activeCategory &&
+                        matchesSearch
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           AFFICHAGE PRODUITS
+        ========================================= */
+
+        function renderProducts() {
+
+            const products =
+                getFilteredProducts();
+
+
+            productsGrid.innerHTML =
+                "";
+
+
+            if (!products.length) {
+
+                productsGrid.innerHTML =
+                    `
+                    <div class="state-card">
+
+                        <div class="state-icon">
+
+                            <svg viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.8"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round">
+
+                                <path d="M6 8h12l1 13H5L6 8z"/>
+
+                                <path d="M9 8a3 3 0 0 1 6 0"/>
+
+                            </svg>
+
+                        </div>
+
+                        <div class="state-title">
+                            Aucun produit disponible
+                        </div>
+
+                        <div class="state-text">
+                            Aucun produit correspondant
+                            n'est actuellement disponible
+                            dans la Boutique.
+                        </div>
+
+                    </div>
+                    `;
+
+                return;
+
+            }
+
+
+            products.forEach(
+                product => {
+
+                    productsGrid.appendChild(
+                        createProductCard(
+                            product
+                        )
+                    );
+
+                }
+            );
+
+        }
+
+
+        /* =========================================
+           CARTE PRODUIT
+        ========================================= */
+
+        function createProductCard(product) {
+
+            const card =
+                document.createElement(
+                    "article"
+                );
+
+
+            card.className =
+                "product-card";
+
+
+            const available =
+                product.available !== false &&
+                product.active !== false &&
+                product.stock !== 0;
+
+
+            const currency =
+                product.currency ||
+                "FCFA";
+
+
+            const image =
+                product.image_url ||
+                product.image ||
+                "";
+
+
+            const name =
+                escapeHtml(
+                    product.name
+                );
+
+
+            const description =
+                escapeHtml(
+                    product.description ||
+                    ""
+                );
+
+
+            const price =
+                formatMoney(
+                    product.price,
+                    currency
+                );
+
+
+            card.innerHTML =
+                `
+                <div class="product-image-box">
+
+                    ${
+                        image
+                        ?
+                        `
+                        <img
+                            class="product-image"
+                            src="${escapeHtml(image)}"
+                            alt="${name}"
+                            loading="lazy"
+                            onerror="this.onerror=null;this.src='logo.png';"
+                        >
+                        `
+                        :
+                        `
+                        <svg
+                            viewBox="0 0 24 24"
+                            width="32"
+                            height="32"
+                            fill="none"
+                            stroke="#444"
+                            stroke-width="1.5"
+                            stroke-linecap="round"
+                            stroke-linejoin="round">
+
+                            <rect
+                                x="3"
+                                y="3"
+                                width="18"
+                                height="18"
+                                rx="3"/>
+
+                            <path
+                                d="M8 15l3-3 2 2 2-3 3 4"/>
+
+                        </svg>
+                        `
+                    }
+
+                </div>
+
+
+                <div class="product-info">
+
+                    <div class="product-name">
+                        ${name}
+                    </div>
+
+
+                    <div class="product-description">
+                        ${description}
+                    </div>
+
+
+                    <div class="product-bottom">
+
+                        <div class="product-price">
+                            ${price}
+                        </div>
+
+
+                        <div
+                            class="product-stock
+                            ${available ? "" : "unavailable"}">
+
+                            ${
+                                available
+                                ? "Disponible"
+                                : "Indisponible"
+                            }
+
+                        </div>
+
+
+                        <button
+                            class="buy-button"
+                            ${available ? "" : "disabled"}>
+
+                            ${
+                                available
+                                ? "Acheter"
+                                : "Indisponible"
+                            }
+
+                        </button>
+
+                    </div>
+
+                </div>
+                `;
+
+
+            const buyButton =
+                card.querySelector(
+                    ".buy-button"
+                );
+
+
+            if (available) {
+
+                buyButton.addEventListener(
+                    "click",
+                    () => {
+
+                        openPurchaseModal(
+                            product
+                        );
+
+                    }
+                );
+
+            }
+
+
+            return card;
+
+        }
+
+
+        /* =========================================
+           MODAL
+        ========================================= */
+
+        function openPurchaseModal(
+            product
+        ) {
+
+            shopState.selectedProduct =
+                product;
+
+
+            document.getElementById(
+                "modalProduct"
+            ).textContent =
+                product.name || "—";
+
+
+            document.getElementById(
+                "modalPrice"
+            ).textContent =
+                formatMoney(
+                    product.price,
+                    product.currency ||
+                    "FCFA"
+                );
+
+
+            document.getElementById(
+                "modalTotal"
+            ).textContent =
+                formatMoney(
+                    product.price,
+                    product.currency ||
+                    "FCFA"
+                );
+
+
+            purchaseModal.classList.add(
+                "active"
+            );
+
+        }
+
+
+        function closePurchaseModal() {
+
+            purchaseModal.classList.remove(
+                "active"
+            );
+
+
+            shopState.selectedProduct =
+                null;
+
+        }
+
+
+        document
+            .getElementById(
+                "cancelPurchase"
+            )
+            .addEventListener(
+                "click",
+                closePurchaseModal
+            );
+
+
+        purchaseModal.addEventListener(
+            "click",
+            event => {
+
+                if (
+                    event.target ===
+                    purchaseModal
+                ) {
+
+                    closePurchaseModal();
+
+                }
+
+            }
+        );
+
+
+        /* =========================================
+           CRÉATION COMMANDE
+        ========================================= */
+
+        document
+            .getElementById(
+                "confirmPurchase"
+            )
+            .addEventListener(
+                "click",
+                createOrder
+            );
+
+
+        async function createOrder() {
+
+            const product =
+                shopState.selectedProduct;
+
+
+            if (!product) {
+                return;
+            }
+
+
+            const button =
+                document.getElementById(
+                    "confirmPurchase"
+                );
+
+
+            button.disabled =
+                true;
+
+
+            button.textContent =
+                "Envoi...";
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API.orders,
+                        {
+                            method: "POST",
+
+                            headers:
+                                authHeaders(),
+
+                            body:
+                                JSON.stringify({
+
+                                    product_id:
+                                        product.id,
+
+                                    quantity:
+                                        1,
+
+                                    telegram_init_data:
+                                        tg?.initData || ""
+
+                                })
+                        }
+                    );
+
+
+                const data =
+                    await response.json();
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        "Impossible de créer la commande"
+                    );
+
+                }
+
+
+                closePurchaseModal();
+
+
+                const reference =
+                    data.order_id ||
+                    data.reference ||
+                    data.transaction_id ||
+                    "En attente";
+
+
+                document.getElementById(
+                    "successReference"
+                ).textContent =
+                    reference;
+
+
+                document
+                    .getElementById(
+                        "successScreen"
+                    )
+                    .classList.add(
+                        "active"
+                    );
+
+
+                await loadOrders();
+
+
+            } catch (error) {
+
+                showToast(
+                    error.message ||
+                    "Impossible de créer la commande"
+                );
+
+            } finally {
+
+                button.disabled =
+                    false;
+
+                button.removeAttribute(
+                    "aria-busy"
+                );
+
+                button.textContent =
+                    "Confirmer";
+
+            }
+
+        }
+
+
+        /* =========================================
+           COMMANDES
+        ========================================= */
+
+        async function loadOrders() {
+
+            const list =
+                document.getElementById(
+                    "ordersList"
+                );
+
+
+            try {
+
+                const response =
+                    await fetch(
+                        API.orders,
+                        {
+                            method: "GET",
+                            headers:
+                                authHeaders()
+                        }
+                    );
+
+
+                if (!response.ok) {
+                    throw new Error(
+                        "orders_failed"
+                    );
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                shopState.orders =
+                    Array.isArray(data)
+                        ? data
+                        : (
+                            Array.isArray(
+                                data.orders
+                            )
+                                ? data.orders
+                                : []
+                        );
+
+
+                renderOrders();
+
+
+            } catch (error) {
+
+                list.innerHTML =
+                    `
+                    <div class="orders-empty">
+
+                        <strong>
+                            Commandes indisponibles
+                        </strong>
+
+                        <span>
+                            Impossible de charger
+                            vos commandes pour le moment.
+                        </span>
+
+                    </div>
+                    `;
+
+            }
+
+        }
+
+
+        function renderOrders() {
+
+            const list =
+                document.getElementById(
+                    "ordersList"
+                );
+
+
+            list.innerHTML =
+                "";
+
+
+            if (!shopState.orders.length) {
+
+                list.innerHTML =
+                    `
+                    <div class="orders-empty">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <path d="M6 8h12l1 13H5L6 8z"/>
+
+                            <path d="M9 8a3 3 0 0 1 6 0"/>
+
+                        </svg>
+
+                        <strong>
+                            Aucune commande
+                        </strong>
+
+                        <span>
+                            Vos commandes apparaîtront ici
+                            après votre achat.
+                        </span>
+
+                    </div>
+                    `;
+
+                return;
+
+            }
+
+
+            shopState.orders.forEach(
+                order => {
+
+                    const card =
+                        document.createElement(
+                            "div"
+                        );
+
+
+                    card.className =
+                        "order-card";
+
+
+                    const status =
+                        getOrderStatus(
+                            order.status
+                        );
+
+
+                    card.innerHTML =
+                        `
+                        <div class="order-top">
+
+                            <div class="order-name">
+                                ${escapeHtml(
+                                    order.product_name ||
+                                    "Commande"
+                                )}
+                            </div>
+
+                            <div class="order-status">
+                                ${escapeHtml(
+                                    status
+                                )}
+                            </div>
+
+                        </div>
+
+
+                        <div class="order-bottom">
+
+                            <span>
+                                ${
+                                    order.reference ||
+                                    order.order_id ||
+                                    "—"
+                                }
+                            </span>
+
+                            <span>
+                                ${formatMoney(
+                                    order.total ||
+                                    order.amount ||
+                                    0,
+                                    order.currency ||
+                                    "FCFA"
+                                )}
+                            </span>
+
+                        </div>
+                        `;
+
+
+                    list.appendChild(
+                        card
+                    );
+
+                }
+            );
+
+        }
+
+
+        function getOrderStatus(status) {
+
+            const value =
+                String(
+                    status || "pending"
+                ).toLowerCase();
+
+
+            const labels = {
+
+                pending:
+                    "En attente",
+
+                processing:
+                    "Traitement",
+
+                validated:
+                    "Validée",
+
+                approved:
+                    "Validée",
+
+                delivered:
+                    "Livrée",
+
+                completed:
+                    "Terminée",
+
+                rejected:
+                    "Refusée",
+
+                cancelled:
+                    "Annulée"
+
+            };
+
+
+            return (
+                labels[value] ||
+                "En attente"
+            );
+
+        }
+
+
+        /* =========================================
+           RECHERCHE
+        ========================================= */
+
+        searchInput.addEventListener(
+            "input",
+            () => {
+
+                shopState.search =
+                    searchInput.value;
+
+                renderProducts();
+
+            }
+        );
+
+
+        /* =========================================
+           ACTUALISER COMMANDES
+        ========================================= */
+
+        document
+            .getElementById(
+                "refreshOrders"
+            )
+            .addEventListener(
+                "click",
+                loadOrders
+            );
+
+
+        /* =========================================
+           ÉTATS
+        ========================================= */
+
+        function renderLoading() {
+
+            productsGrid.innerHTML =
+                `
+                <div class="state-card">
+
+                    <div class="loader"></div>
+
+                    <div
+                        class="state-title"
+                        style="margin-top:15px;">
+
+                        Chargement
+
+                    </div>
+
+                    <div class="state-text">
+                        Chargement des produits disponibles.
+                    </div>
+
+                </div>
+                `;
+
+        }
+
+
+        function renderError() {
+
+            productsGrid.innerHTML =
+                `
+                <div class="state-card">
+
+                    <div class="state-icon">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.8"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <circle
+                                cx="12"
+                                cy="12"
+                                r="9"/>
+
+                            <path d="M12 8v4"/>
+
+                            <path d="M12 16h.01"/>
+
+                        </svg>
+
+                    </div>
+
+                    <div class="state-title">
+                        Boutique indisponible
+                    </div>
+
+                    <div class="state-text">
+                        Impossible de récupérer les produits
+                        depuis le serveur.
+                    </div>
+
+                    <button
+                        id="retryProducts"
+                        class="buy-button"
+                        style="max-width:160px;">
+
+                        Réessayer
+
+                    </button>
+
+                </div>
+                `;
+
+
+            document
+                .getElementById(
+                    "retryProducts"
+                )
+                .addEventListener(
+                    "click",
+                    loadProducts
+                );
+
+        }
+
+
+        /* =========================================
+           TOAST
+        ========================================= */
+
+        function showToast(message) {
+
+            const toast =
+                document.getElementById(
+                    "toast"
+                );
+
+
+            toast.textContent =
+                message;
+
+
+            toast.classList.add(
+                "show"
+            );
+
+
+            clearTimeout(
+                window.shopToast
+            );
+
+
+            window.shopToast =
+                setTimeout(
+                    () => {
+
+                        toast.classList.remove(
+                            "show"
+                        );
+
+                    },
+                    2400
+                );
+
+        }
+
+
+        /* =========================================
+           NAVIGATION
+        ========================================= */
+
+        document
+            .getElementById(
+                "backButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "index.html";
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "homeNav"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "index.html";
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "depositNav"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "deposit.html";
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "withdrawNav"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "withdraw.html";
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "shopNav"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "shop.html";
+
+                }
+            );
+
+
+        document
+            .getElementById(
+                "settingsNav"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    window.location.href =
+                        "settings.html";
+
+                }
+            );
+
+
+        /* =========================================
+           FERMETURE ÉCRAN SUCCÈS
+        ========================================= */
+
+        document
+            .getElementById(
+                "successScreen"
+            )
+            .addEventListener(
+                "click",
+                () => {
+
+                    document
+                        .getElementById(
+                            "successScreen"
+                        )
+                        .classList.remove(
+                            "active"
+                        );
+
+                }
+            );
+
+
+        /* =========================================
+           INITIALISATION
+        ========================================= */
+
+        loadProducts();
+
+        loadOrders();
+
+    </script>
+
+</body>
+</html>

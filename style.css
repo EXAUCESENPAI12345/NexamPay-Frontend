@@ -1,0 +1,2217 @@
+/* =========================================================
+   NEXAMPAY — STYLE.CSS
+   Frontend Production
+   Accueil
+========================================================= */
+
+
+/* =========================================================
+   VARIABLES
+========================================================= */
+
+:root {
+
+    --np-red: #e50914;
+    --np-red-light: #ff2833;
+    --np-red-dark: #b8060e;
+
+    --background: #050505;
+    --background-soft: #090909;
+
+    --surface: #101010;
+    --surface-2: #151515;
+    --surface-3: #1a1a1a;
+
+    --border: rgba(255, 255, 255, 0.075);
+    --border-light: rgba(255, 255, 255, 0.11);
+
+    --white: #ffffff;
+    --text: #eeeeee;
+    --muted: #858585;
+    --muted-dark: #5d5d5d;
+
+    --success: #35d789;
+    --danger: #ff3943;
+
+    --radius-sm: 11px;
+    --radius-md: 16px;
+    --radius-lg: 23px;
+
+    --navigation-height: 76px;
+
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+* {
+
+    margin: 0;
+    padding: 0;
+
+    box-sizing: border-box;
+
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+
+html {
+
+    width: 100%;
+    min-height: 100%;
+
+    background: var(--background);
+
+}
+
+
+body {
+
+    width: 100%;
+    min-height: 100vh;
+
+    margin: 0;
+
+    overflow-x: hidden;
+
+    background:
+        radial-gradient(
+            circle at 50% -15%,
+            rgba(229, 9, 20, 0.10),
+            transparent 34%
+        ),
+        var(--background);
+
+    color: var(--white);
+
+    font-family:
+        Inter,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Helvetica,
+        Arial,
+        sans-serif;
+
+    padding-bottom:
+        calc(
+            var(--navigation-height)
+            +
+            env(safe-area-inset-bottom)
+        );
+
+}
+
+
+button {
+
+    border: 0;
+    outline: 0;
+
+    background: transparent;
+
+    color: inherit;
+
+    font: inherit;
+
+    cursor: pointer;
+
+}
+
+
+button:active {
+
+    transform: scale(0.97);
+
+}
+
+
+img {
+
+    max-width: 100%;
+
+    display: block;
+
+}
+
+
+/* =========================================================
+   APPLICATION
+========================================================= */
+
+.app {
+
+    width: 100%;
+    max-width: 540px;
+
+    min-height: 100vh;
+
+    margin: 0 auto;
+
+    padding:
+        12px
+        17px
+        35px;
+
+}
+
+
+/* =========================================================
+   SPLASH SCREEN
+========================================================= */
+
+.splash-screen {
+
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 99999;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    overflow: hidden;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(229, 9, 20, 0.16),
+            transparent 30%
+        ),
+        #050505;
+
+    opacity: 1;
+
+    visibility: visible;
+
+    transition:
+        opacity 0.65s ease,
+        visibility 0.65s ease;
+
+}
+
+
+.splash-screen.hidden {
+
+    opacity: 0;
+
+    visibility: hidden;
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   SPLASH LOGO
+========================================================= */
+
+.splash-logo-wrapper {
+
+    position: relative;
+
+    width: 116px;
+    height: 116px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+}
+
+
+.splash-logo-wrapper::before {
+
+    content: "";
+
+    position: absolute;
+
+    width: 165px;
+    height: 165px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(229, 9, 20, 0.14);
+
+    box-shadow:
+        0 0 45px
+        rgba(229, 9, 20, 0.10);
+
+    animation:
+        splash-ring 2.8s
+        ease-in-out
+        infinite;
+
+}
+
+
+.splash-logo-wrapper::after {
+
+    content: "";
+
+    position: absolute;
+
+    width: 135px;
+    height: 135px;
+
+    border-radius: 50%;
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.04);
+
+    animation:
+        splash-ring-small 2.4s
+        ease-in-out
+        infinite;
+
+}
+
+
+/* =========================================================
+   LOGO NP
+========================================================= */
+
+.splash-logo {
+
+    position: relative;
+
+    z-index: 2;
+
+    width: 105px;
+    height: 105px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 31px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1d1d1d,
+            #080808
+        );
+
+    border:
+        1px solid
+        rgba(255, 255, 255, 0.09);
+
+    box-shadow:
+        0 22px 50px
+        rgba(0, 0, 0, 0.55),
+
+        0 0 38px
+        rgba(229, 9, 20, 0.16),
+
+        inset 0 1px
+        rgba(255, 255, 255, 0.08);
+
+    transform:
+        perspective(700px)
+        rotateX(5deg);
+
+    animation:
+        splash-logo-in 1s
+        cubic-bezier(.2,.8,.2,1) forwards,
+
+        splash-logo-float 3.2s
+        ease-in-out
+        1s
+        infinite;
+
+}
+
+
+.logo-n,
+.logo-p {
+
+    display: inline-block;
+
+    font-size: 46px;
+
+    line-height: 1;
+
+    font-weight: 950;
+
+    letter-spacing: -10px;
+
+    transform: skewX(-8deg);
+
+}
+
+
+.logo-n {
+
+    color: #ffffff;
+
+}
+
+
+.logo-p {
+
+    color: var(--np-red);
+
+}
+
+
+/* =========================================================
+   SPLASH BRAND
+========================================================= */
+
+.splash-brand {
+
+    margin-top: 27px;
+
+    font-size: 21px;
+
+    font-weight: 850;
+
+    letter-spacing: 1px;
+
+    animation:
+        splash-brand-in 0.8s
+        ease
+        0.35s
+        both;
+
+}
+
+
+.splash-brand span {
+
+    color: var(--np-red);
+
+}
+
+
+/* =========================================================
+   SPLASH LOADER
+========================================================= */
+
+.splash-loader {
+
+    width: 105px;
+    height: 3px;
+
+    margin-top: 22px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #1c1c1c;
+
+}
+
+
+.splash-loader span {
+
+    display: block;
+
+    width: 38%;
+    height: 100%;
+
+    border-radius: inherit;
+
+    background:
+        linear-gradient(
+            90deg,
+            var(--np-red-dark),
+            var(--np-red-light)
+        );
+
+    animation:
+        splash-loader 1.15s
+        cubic-bezier(.4,0,.2,1)
+        infinite;
+
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.top-header {
+
+    height: 55px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+}
+
+
+/* =========================================================
+   PROFILE BUTTON
+========================================================= */
+
+.profile-button {
+
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    overflow: hidden;
+
+    border-radius: 50%;
+
+    background:
+        linear-gradient(
+            145deg,
+            #1b1b1b,
+            #0d0d0d
+        );
+
+    border:
+        1px solid
+        var(--border-light);
+
+    color: #ffffff;
+
+    font-size: 11px;
+
+    font-weight: 800;
+
+}
+
+
+.profile-button img {
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: none;
+
+}
+
+
+#profileInitials {
+
+    display: block;
+
+}
+
+
+/* =========================================================
+   HEADER BRAND
+========================================================= */
+
+.header-brand {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 7px;
+
+}
+
+
+.header-logo {
+
+    color: var(--np-red);
+
+    font-size: 21px;
+
+    font-weight: 950;
+
+    letter-spacing: -5px;
+
+    transform: skewX(-8deg);
+
+}
+
+
+.header-name {
+
+    color: #f5f5f5;
+
+    font-size: 17px;
+
+    font-weight: 850;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+.header-name span {
+
+    color: var(--np-red);
+
+}
+
+
+/* =========================================================
+   NOTIFICATION
+========================================================= */
+
+.notification-button {
+
+    position: relative;
+
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #171717,
+            #0d0d0d
+        );
+
+    border:
+        1px solid
+        var(--border);
+
+}
+
+
+.notification-icon {
+
+    position: relative;
+
+    width: 15px;
+    height: 16px;
+
+    border:
+        1.5px solid
+        #d8d8d8;
+
+    border-radius:
+        9px 9px 4px 4px;
+
+}
+
+
+.notification-icon::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 4px;
+    right: 4px;
+
+    bottom: -4px;
+
+    height: 1.5px;
+
+    background: #d8d8d8;
+
+}
+
+
+.notification-icon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 6px;
+
+    bottom: -7px;
+
+    width: 3px;
+    height: 3px;
+
+    border-radius: 50%;
+
+    background: #d8d8d8;
+
+}
+
+
+.notification-badge {
+
+    position: absolute;
+
+    top: 5px;
+    right: 5px;
+
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--np-red);
+
+    box-shadow:
+        0 0 10px
+        rgba(229, 9, 20, 0.75);
+
+}
+
+
+.hidden {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   USER SECTION
+========================================================= */
+
+.user-section {
+
+    padding:
+        18px
+        4px
+        16px;
+
+}
+
+
+.greeting {
+
+    display: block;
+
+    margin-bottom: 4px;
+
+    color: var(--muted);
+
+    font-size: 11px;
+
+}
+
+
+.user-information h1 {
+
+    margin: 0 0 7px;
+
+    color: #f5f5f5;
+
+    font-size: 19px;
+
+    line-height: 1.15;
+
+    font-weight: 750;
+
+    letter-spacing: -0.5px;
+
+}
+
+
+/* =========================================================
+   NEXAMPAY ID
+========================================================= */
+
+.nexampay-id {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 8px;
+
+    padding: 0;
+
+    color: #999;
+
+    font-size: 10px;
+
+    letter-spacing: 0.6px;
+
+}
+
+
+.copy-icon {
+
+    position: relative;
+
+    width: 12px;
+    height: 12px;
+
+    border:
+        1.2px solid
+        #8d8d8d;
+
+    border-radius: 2px;
+
+}
+
+
+.copy-icon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: -4px;
+    top: -4px;
+
+    width: 8px;
+    height: 8px;
+
+    border:
+        1.2px solid
+        #8d8d8d;
+
+    border-radius: 2px;
+
+    background: var(--background);
+
+}
+
+
+/* =========================================================
+   BALANCE CARD
+========================================================= */
+
+.balance-card {
+
+    position: relative;
+
+    height: 208px;
+
+    overflow: hidden;
+
+    padding: 21px;
+
+    border-radius: var(--radius-lg);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.10);
+
+    background:
+        linear-gradient(
+            135deg,
+            #191919 0%,
+            #101010 45%,
+            #080808 100%
+        );
+
+    box-shadow:
+        0 22px 60px
+        rgba(0,0,0,0.48),
+
+        inset 0 1px
+        rgba(255,255,255,0.025);
+
+}
+
+
+/* =========================================================
+   CARD RED LIGHT
+========================================================= */
+
+.balance-card::before {
+
+    content: "";
+
+    position: absolute;
+
+    right: -100px;
+    bottom: -110px;
+
+    width: 340px;
+    height: 240px;
+
+    border-radius: 50%;
+
+    background:
+        radial-gradient(
+            ellipse,
+            rgba(229,9,20,0.34),
+            transparent 68%
+        );
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   CARD RED CURVE
+========================================================= */
+
+.balance-card::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: -100px;
+    bottom: -90px;
+
+    width: 470px;
+    height: 150px;
+
+    border-top:
+        1px solid
+        rgba(229,9,20,0.30);
+
+    border-radius: 50%;
+
+    transform: rotate(-7deg);
+
+    box-shadow:
+
+        0 -12px 0
+        rgba(229,9,20,0.08),
+
+        0 -24px 0
+        rgba(229,9,20,0.045);
+
+    pointer-events: none;
+
+}
+
+
+/* =========================================================
+   CARD DECORATION
+========================================================= */
+
+.balance-decoration {
+
+    position: absolute;
+
+    right: -70px;
+    bottom: -30px;
+
+    width: 320px;
+    height: 130px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.035);
+
+    border-radius: 50%;
+
+    transform: rotate(-10deg);
+
+}
+
+
+/* =========================================================
+   BALANCE HEADER
+========================================================= */
+
+.balance-header {
+
+    position: relative;
+
+    z-index: 5;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    color: #999;
+
+    font-size: 10px;
+
+}
+
+
+/* =========================================================
+   BALANCE TOGGLE
+========================================================= */
+
+.balance-toggle {
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: rgba(255,255,255,0.045);
+
+    border:
+        1px solid
+        rgba(255,255,255,0.07);
+
+}
+
+
+/* =========================================================
+   EYE
+========================================================= */
+
+.eye-icon {
+
+    position: relative;
+
+    width: 16px;
+    height: 10px;
+
+    border:
+        1.4px solid
+        #999;
+
+    border-radius: 100% 0;
+
+    transform: rotate(45deg);
+
+}
+
+
+.eye-icon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 4px;
+    top: 2px;
+
+    width: 4px;
+    height: 4px;
+
+    border-radius: 50%;
+
+    background: #999;
+
+}
+
+
+/* =========================================================
+   BALANCE VALUE
+========================================================= */
+
+.balance-value {
+
+    position: relative;
+
+    z-index: 5;
+
+    margin-top: 22px;
+
+    min-height: 42px;
+
+    display: flex;
+
+    align-items: baseline;
+
+    gap: 7px;
+
+    color: #ffffff;
+
+    font-size: 32px;
+
+    line-height: 1;
+
+    font-weight: 800;
+
+    letter-spacing: -1.4px;
+
+}
+
+
+.balance-value small {
+
+    font-size: 14px;
+
+    font-weight: 650;
+
+    letter-spacing: 0;
+
+    color: #b5b5b5;
+
+}
+
+
+/* =========================================================
+   BALANCE FOOTER
+========================================================= */
+
+.balance-footer {
+
+    position: absolute;
+
+    z-index: 5;
+
+    left: 21px;
+    right: 21px;
+    bottom: 17px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    color: #686868;
+
+    font-size: 9px;
+
+}
+
+
+.balance-footer strong {
+
+    color: var(--np-red);
+
+    font-size: 34px;
+
+    line-height: 1;
+
+    font-weight: 950;
+
+    letter-spacing: -8px;
+
+    transform: skewX(-8deg);
+
+}
+
+
+/* =========================================================
+   QUICK ACTIONS
+========================================================= */
+
+.quick-actions {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 9px;
+
+    margin:
+        13px
+        0
+        30px;
+
+}
+
+
+.quick-action {
+
+    height: 79px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 8px;
+
+    border-radius: var(--radius-md);
+
+    background:
+        linear-gradient(
+            145deg,
+            #131313,
+            #0e0e0e
+        );
+
+    border:
+        1px solid
+        var(--border);
+
+    color: #dcdcdc;
+
+    font-size: 9px;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+
+}
+
+
+.quick-action:hover {
+
+    border-color:
+        rgba(229,9,20,0.22);
+
+    background:
+        linear-gradient(
+            145deg,
+            #171717,
+            #101010
+        );
+
+}
+
+
+/* =========================================================
+   QUICK ICON
+========================================================= */
+
+.quick-icon {
+
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #1a1a1a;
+
+    color: var(--np-red);
+
+}
+
+
+/* =========================================================
+   DEPOSIT ICON
+========================================================= */
+
+.deposit-icon {
+
+    font-size: 23px;
+
+    font-weight: 300;
+
+}
+
+
+/* =========================================================
+   WITHDRAW ICON
+========================================================= */
+
+.withdraw-icon {
+
+    font-size: 19px;
+
+    font-weight: 400;
+
+}
+
+
+/* =========================================================
+   SHOP ICON
+========================================================= */
+
+.shop-icon {
+
+    position: relative;
+
+    width: 16px;
+    height: 14px;
+
+    border:
+        1.5px solid
+        var(--np-red);
+
+    border-radius: 2px;
+
+}
+
+
+.shop-icon::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 3px;
+    right: 3px;
+
+    top: -5px;
+
+    height: 7px;
+
+    border:
+        1.5px solid
+        var(--np-red);
+
+    border-bottom: 0;
+
+    border-radius:
+        8px 8px 0 0;
+
+}
+
+
+/* =========================================================
+   BANK CARD ICON
+========================================================= */
+
+.card-icon {
+
+    position: relative;
+
+    width: 18px;
+    height: 13px;
+
+    border:
+        1.5px solid
+        var(--np-red);
+
+    border-radius: 3px;
+
+}
+
+
+.card-icon::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 2px;
+    right: 2px;
+
+    top: 4px;
+
+    border-top:
+        1px solid
+        var(--np-red);
+
+}
+
+
+/* =========================================================
+   ACTIVITY
+========================================================= */
+
+.activity-section {
+
+    padding-bottom: 20px;
+
+}
+
+
+.section-header {
+
+    display: flex;
+
+    align-items: flex-end;
+
+    justify-content: space-between;
+
+    margin-bottom: 11px;
+
+}
+
+
+.section-label {
+
+    display: block;
+
+    color: var(--np-red);
+
+    font-size: 9px;
+
+    font-weight: 800;
+
+    letter-spacing: 1.4px;
+
+}
+
+
+.section-header h2 {
+
+    margin-top: 5px;
+
+    color: #eeeeee;
+
+    font-size: 17px;
+
+    line-height: 1.1;
+
+    font-weight: 700;
+
+    letter-spacing: -0.45px;
+
+}
+
+
+.view-all {
+
+    color: #ff3d46;
+
+    font-size: 10px;
+
+}
+
+
+/* =========================================================
+   TRANSACTIONS
+========================================================= */
+
+.transactions-list {
+
+    width: 100%;
+
+    overflow: hidden;
+
+    min-height: 145px;
+
+    border:
+        1px solid
+        var(--border);
+
+    border-radius: 19px;
+
+    background: #0d0d0d;
+
+}
+
+
+.transactions-loading {
+
+    min-height: 145px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    justify-content: center;
+
+    gap: 12px;
+
+    padding: 20px;
+
+}
+
+
+.transactions-loading span {
+
+    display: block;
+
+    height: 9px;
+
+    border-radius: 99px;
+
+    background:
+        linear-gradient(
+            90deg,
+            #141414,
+            #1c1c1c,
+            #141414
+        );
+
+    background-size: 200% 100%;
+
+    animation:
+        loading-shimmer 1.4s
+        linear
+        infinite;
+
+}
+
+
+.transactions-loading span:nth-child(1) {
+
+    width: 45%;
+
+}
+
+
+.transactions-loading span:nth-child(2) {
+
+    width: 75%;
+
+}
+
+
+.transactions-loading span:nth-child(3) {
+
+    width: 55%;
+
+}
+
+
+/* =========================================================
+   TRANSACTION ITEM
+========================================================= */
+
+.transaction-item {
+
+    min-height: 65px;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 11px;
+
+    padding:
+        12px
+        14px;
+
+    border-bottom:
+        1px solid
+        var(--border);
+
+}
+
+
+.transaction-item:last-child {
+
+    border-bottom: 0;
+
+}
+
+
+.transaction-icon {
+
+    width: 36px;
+    height: 36px;
+
+    flex: 0 0 36px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #181818;
+
+    color: var(--np-red);
+
+}
+
+
+.transaction-content {
+
+    min-width: 0;
+
+    flex: 1;
+
+}
+
+
+.transaction-title {
+
+    display: block;
+
+    overflow: hidden;
+
+    color: #e7e7e7;
+
+    font-size: 11px;
+
+    font-weight: 650;
+
+    white-space: nowrap;
+
+    text-overflow: ellipsis;
+
+}
+
+
+.transaction-date {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #686868;
+
+    font-size: 9px;
+
+}
+
+
+.transaction-amount {
+
+    font-size: 11px;
+
+    font-weight: 750;
+
+}
+
+
+.transaction-amount.in {
+
+    color: var(--success);
+
+}
+
+
+.transaction-amount.out {
+
+    color: #eeeeee;
+
+}
+
+
+/* =========================================================
+   BOTTOM NAVIGATION
+========================================================= */
+
+.bottom-navigation {
+
+    position: fixed;
+
+    z-index: 500;
+
+    left: 50%;
+    bottom: 0;
+
+    transform:
+        translateX(-50%);
+
+    width: min(540px, 100%);
+
+    min-height:
+        var(--navigation-height);
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(6, 1fr);
+
+    align-items: center;
+
+    padding:
+        8px
+        6px
+        calc(
+            8px +
+            env(safe-area-inset-bottom)
+        );
+
+    background:
+        rgba(7, 7, 7, 0.94);
+
+    border-top:
+        1px solid
+        var(--border);
+
+    backdrop-filter:
+        blur(22px);
+
+    -webkit-backdrop-filter:
+        blur(22px);
+
+}
+
+
+.navigation-item {
+
+    height: 55px;
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+    justify-content: center;
+
+    gap: 5px;
+
+    color: #606060;
+
+    font-size: 8px;
+
+    transition:
+        color 0.2s ease;
+
+}
+
+
+.navigation-item.active {
+
+    color: #ffffff;
+
+}
+
+
+.navigation-item.active
+.navigation-icon {
+
+    color: var(--np-red);
+
+}
+
+
+/* =========================================================
+   NAVIGATION ICON
+========================================================= */
+
+.navigation-icon {
+
+    position: relative;
+
+    width: 19px;
+    height: 19px;
+
+    display: block;
+
+    color: currentColor;
+
+}
+
+
+/* =========================================================
+   HOME
+========================================================= */
+
+.home-icon::before {
+
+    content: "";
+
+    position: absolute;
+
+    left: 3px;
+    bottom: 2px;
+
+    width: 12px;
+    height: 10px;
+
+    border:
+        1.5px solid
+        currentColor;
+
+    border-top: 0;
+
+    border-radius: 2px;
+
+}
+
+
+.home-icon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 4px;
+    top: 2px;
+
+    width: 10px;
+    height: 10px;
+
+    border-left:
+        1.5px solid
+        currentColor;
+
+    border-top:
+        1.5px solid
+        currentColor;
+
+    transform:
+        rotate(45deg);
+
+}
+
+
+/* =========================================================
+   DEPOSIT
+========================================================= */
+
+.deposit-navigation-icon::before {
+
+    content: "+";
+
+    position: absolute;
+
+    top: 0;
+    left: 2px;
+
+    font-size: 22px;
+
+    line-height: 18px;
+
+}
+
+
+/* =========================================================
+   WITHDRAW
+========================================================= */
+
+.withdraw-navigation-icon::before {
+
+    content: "−";
+
+    position: absolute;
+
+    top: 0;
+    left: 2px;
+
+    font-size: 23px;
+
+    line-height: 18px;
+
+}
+
+
+/* =========================================================
+   TRANSFER
+========================================================= */
+
+.transfer-navigation-icon::before {
+
+    content: "↗";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    font-size: 20px;
+
+    line-height: 18px;
+
+}
+
+
+/* =========================================================
+   CARD
+========================================================= */
+
+.card-navigation-icon {
+
+    width: 19px;
+    height: 13px;
+
+    margin-top: 3px;
+
+    border:
+        1.5px solid
+        currentColor;
+
+    border-radius: 3px;
+
+}
+
+
+.card-navigation-icon::after {
+
+    content: "";
+
+    position: absolute;
+
+    left: 2px;
+    right: 2px;
+
+    top: 4px;
+
+    border-top:
+        1px solid
+        currentColor;
+
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+.settings-navigation-icon::before {
+
+    content: "⚙";
+
+    position: absolute;
+
+    top: 0;
+    left: 0;
+
+    font-size: 18px;
+
+    line-height: 18px;
+
+}
+
+
+/* =========================================================
+   TOAST
+========================================================= */
+
+.toast {
+
+    position: fixed;
+
+    z-index: 100000;
+
+    left: 50%;
+
+    bottom:
+        calc(
+            var(--navigation-height)
+            + 25px
+        );
+
+    transform:
+        translate(-50%, 15px);
+
+    max-width:
+        calc(100% - 40px);
+
+    padding:
+        10px
+        15px;
+
+    border:
+        1px solid
+        var(--border-light);
+
+    border-radius: 12px;
+
+    background:
+        rgba(30,30,30,0.96);
+
+    color: #ffffff;
+
+    font-size: 10px;
+
+    white-space: nowrap;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+
+    backdrop-filter:
+        blur(12px);
+
+}
+
+
+.toast.show {
+
+    opacity: 1;
+
+    transform:
+        translate(-50%, 0);
+
+}
+
+
+/* =========================================================
+   ANIMATIONS
+========================================================= */
+
+@keyframes splash-logo-in {
+
+    0% {
+
+        opacity: 0;
+
+        transform:
+            perspective(700px)
+            rotateX(25deg)
+            scale(0.72);
+
+    }
+
+    100% {
+
+        opacity: 1;
+
+        transform:
+            perspective(700px)
+            rotateX(5deg)
+            scale(1);
+
+    }
+
+}
+
+
+@keyframes splash-logo-float {
+
+    0%,
+    100% {
+
+        transform:
+            perspective(700px)
+            rotateX(5deg)
+            translateY(0);
+
+    }
+
+    50% {
+
+        transform:
+            perspective(700px)
+            rotateX(5deg)
+            translateY(-7px);
+
+    }
+
+}
+
+
+@keyframes splash-ring {
+
+    0% {
+
+        transform:
+            scale(0.85);
+
+        opacity: 0.15;
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.08);
+
+        opacity: 0.55;
+
+    }
+
+    100% {
+
+        transform:
+            scale(0.85);
+
+        opacity: 0.15;
+
+    }
+
+}
+
+
+@keyframes splash-ring-small {
+
+    0% {
+
+        transform:
+            scale(0.92);
+
+        opacity: 0.12;
+
+    }
+
+    50% {
+
+        transform:
+            scale(1.04);
+
+        opacity: 0.35;
+
+    }
+
+    100% {
+
+        transform:
+            scale(0.92);
+
+        opacity: 0.12;
+
+    }
+
+}
+
+
+@keyframes splash-brand-in {
+
+    from {
+
+        opacity: 0;
+
+        transform:
+            translateY(10px);
+
+    }
+
+    to {
+
+        opacity: 1;
+
+        transform:
+            translateY(0);
+
+    }
+
+}
+
+
+@keyframes splash-loader {
+
+    0% {
+
+        transform:
+            translateX(-150%);
+
+    }
+
+    100% {
+
+        transform:
+            translateX(310%);
+
+    }
+
+}
+
+
+@keyframes loading-shimmer {
+
+    0% {
+
+        background-position:
+            200% 0;
+
+    }
+
+    100% {
+
+        background-position:
+            -200% 0;
+
+    }
+
+}
+
+
+/* =========================================================
+   RESPONSIVE — PETITS ÉCRANS
+========================================================= */
+
+@media (max-width: 380px) {
+
+    .app {
+
+        padding-left: 12px;
+        padding-right: 12px;
+
+    }
+
+
+    .quick-actions {
+
+        gap: 6px;
+
+    }
+
+
+    .quick-action {
+
+        height: 74px;
+
+        font-size: 8px;
+
+    }
+
+
+    .balance-card {
+
+        height: 195px;
+
+    }
+
+
+    .balance-value {
+
+        font-size: 28px;
+
+    }
+
+
+    .header-name {
+
+        font-size: 15px;
+
+    }
+
+}
+
+
+/* =========================================================
+   ÉCRANS PLUS LARGES
+========================================================= */
+
+@media (min-width: 600px) {
+
+    body {
+
+        background:
+            radial-gradient(
+                circle at 50% -10%,
+                rgba(229, 9, 20, 0.08),
+                transparent 30%
+            ),
+            #090909;
+
+    }
+
+
+    .app {
+
+        background: #050505;
+
+        box-shadow:
+            0 0 80px
+            rgba(0,0,0,0.4);
+
+    }
+
+}
+
+/* =========================================================
+   SPLASH NEXAMPAY — SORTIE GARANTIE
+========================================================= */
+
+.splash-screen {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 99999 !important;
+
+    opacity: 1;
+
+    visibility: visible;
+
+    pointer-events: auto;
+
+    transition:
+        opacity .45s ease,
+        visibility .45s ease;
+}
+
+
+.splash-screen.hidden {
+    opacity: 0 !important;
+
+    visibility: hidden !important;
+
+    pointer-events: none !important;
+
+    z-index: -1 !important;
+}

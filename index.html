@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta name="theme-color" content="#050505">
+
+    <title>NexamPay</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="nexampay-core.js"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --np-red: #e50914;
+            --np-red-light: #ff3038;
+            --np-red-dark: #a80008;
+
+            --np-black: #050505;
+            --np-bg: #080808;
+            --np-card: #111111;
+            --np-card-2: #171717;
+
+            --np-white: #ffffff;
+            --np-text: #f5f5f5;
+            --np-muted: #929292;
+
+            --np-border: rgba(255,255,255,.08);
+            --np-green: #20c77a;
+        }
+
+        html {
+            background: var(--np-black);
+        }
+
+        body {
+            min-height: 100vh;
+            overflow-x: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 90% 0%,
+                    rgba(229,9,20,.08),
+                    transparent 30%
+                ),
+                var(--np-bg);
+
+            color: var(--np-text);
+
+            font-family:
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+
+            padding-bottom: 92px;
+        }
+
+        button {
+            border: 0;
+            outline: 0;
+            font: inherit;
+            color: inherit;
+            cursor: pointer;
+        }
+
+        /* =========================================
+           SPLASH SCREEN
+        ========================================= */
+
+        #splashScreen {
+            position: fixed;
+            inset: 0;
+
+            z-index: 9999;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: #050505;
+
+            opacity: 1;
+            visibility: visible;
+
+            transition:
+                opacity .55s ease,
+                visibility .55s ease;
+        }
+
+        #splashScreen.hide {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        .splash-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            animation: splashAppear .8s ease forwards;
+        }
+
+        .splash-logo {
+            width: 128px;
+            height: 128px;
+
+            object-fit: contain;
+
+            filter:
+                drop-shadow(
+                    0 0 25px rgba(229,9,20,.28)
+                );
+
+            animation:
+                logoPulse 1.7s ease-in-out infinite;
+        }
+
+        .splash-loader {
+            width: 38px;
+            height: 3px;
+
+            margin-top: 32px;
+
+            overflow: hidden;
+
+            border-radius: 10px;
+
+            background: rgba(255,255,255,.08);
+        }
+
+        .splash-loader::after {
+            content: "";
+
+            display: block;
+
+            width: 45%;
+            height: 100%;
+
+            border-radius: inherit;
+
+            background: var(--np-red);
+
+            animation:
+                splashLoader 1.2s ease-in-out infinite;
+        }
+
+        @keyframes splashAppear {
+            from {
+                opacity: 0;
+                transform: scale(.90);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        @keyframes logoPulse {
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.035);
+            }
+        }
+
+        @keyframes splashLoader {
+            0% {
+                transform: translateX(-120%);
+            }
+
+            100% {
+                transform: translateX(230%);
+            }
+        }
+
+        /* =========================================
+           HEADER
+        ========================================= */
+
+        .header {
+            height: 70px;
+
+            padding: 0 16px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+        }
+
+        .header-logo {
+            width: 38px;
+            height: 38px;
+
+            object-fit: contain;
+        }
+
+        .header-name {
+            font-size: 21px;
+            font-weight: 800;
+            letter-spacing: -.6px;
+        }
+
+        .header-name span {
+            color: var(--np-red);
+        }
+
+        .telegram-header-profile {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 9px;
+            min-width: 0;
+            max-width: 62%;
+        }
+
+        .header-profile-photo {
+            width: 43px;
+            height: 43px;
+            min-width: 43px;
+            border-radius: 14px;
+            object-fit: cover;
+            background: var(--np-card);
+            border: 1px solid var(--np-border);
+        }
+
+        .header-profile-info {
+            min-width: 0;
+        }
+
+        .header-telegram-name {
+            max-width: 145px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            font-size: 14px;
+            font-weight: 750;
+        }
+
+        .header-telegram-number {
+            margin-top: 3px;
+            color: var(--np-muted);
+            font-size: 9px;
+        }
+
+        /* =========================================
+           CONTAINER
+        ========================================= */
+
+        .container {
+            width: 100%;
+            max-width: 560px;
+
+            margin: auto;
+
+            padding: 0 15px 25px;
+        }
+
+        /* =========================================
+           NEXAMPAY CARD
+        ========================================= */
+
+        .nexampay-card {
+            position: relative;
+
+            min-height: 235px;
+
+            overflow: hidden;
+
+            padding: 20px;
+
+            border-radius: 27px;
+
+            background:
+                radial-gradient(
+                    circle at 100% 0%,
+                    rgba(229,9,20,.32),
+                    transparent 39%
+                ),
+                radial-gradient(
+                    circle at 0% 100%,
+                    rgba(229,9,20,.08),
+                    transparent 35%
+                ),
+                linear-gradient(
+                    145deg,
+                    #171717,
+                    #080808
+                );
+
+            border: 1px solid rgba(229,9,20,.25);
+
+            box-shadow:
+                0 18px 45px rgba(0,0,0,.40);
+        }
+
+        .nexampay-card::before {
+            content: "";
+
+            position: absolute;
+
+            width: 310px;
+            height: 310px;
+
+            right: -150px;
+            top: -165px;
+
+            border-radius: 50%;
+
+            border: 1px solid rgba(255,255,255,.07);
+
+            box-shadow:
+                0 0 0 28px rgba(255,255,255,.015),
+                0 0 0 56px rgba(255,255,255,.009);
+        }
+
+        .nexampay-card::after {
+            content: "NP";
+
+            position: absolute;
+
+            right: 17px;
+            bottom: -35px;
+
+            font-size: 145px;
+
+            font-weight: 900;
+            font-style: italic;
+
+            letter-spacing: -13px;
+
+            color: rgba(229,9,20,.075);
+
+            pointer-events: none;
+        }
+
+        /* =========================================
+           CARD TOP
+        ========================================= */
+
+        .card-top {
+            position: relative;
+            z-index: 2;
+
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+        }
+
+        /* =========================================
+           CARD BALANCE
+        ========================================= */
+
+        .card-balance {
+            position: relative;
+            z-index: 2;
+
+            margin-top: 29px;
+        }
+
+        .card-balance-label {
+            color: #9b9b9b;
+
+            font-size: 11px;
+
+            margin-bottom: 7px;
+        }
+
+        .card-balance-value {
+            display: flex;
+            align-items: baseline;
+            gap: 7px;
+
+            font-size: 32px;
+            font-weight: 800;
+
+            letter-spacing: -.8px;
+        }
+
+        .card-balance-currency {
+            color: #bdbdbd;
+
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        /* =========================================
+           CARD BOTTOM
+        ========================================= */
+
+        .brand-logo {
+            position: relative;
+            z-index: 2;
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            flex: 0 0 52px;
+        }
+
+        .card-bottom {
+            position: absolute;
+
+            z-index: 2;
+
+            left: 20px;
+            right: 20px;
+            bottom: 18px;
+
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-between;
+        }
+
+        .nexam-number-box {
+            min-width: 0;
+        }
+
+        .nexam-number-label {
+            color: #777777;
+
+            font-size: 9px;
+
+            text-transform: uppercase;
+            letter-spacing: .7px;
+        }
+
+        .nexam-number {
+            margin-top: 3px;
+
+            font-size: 14px;
+            font-weight: 700;
+
+            letter-spacing: .4px;
+        }
+
+        .card-brand-text {
+            font-size: 13px;
+            font-weight: 800;
+            letter-spacing: .6px;
+        }
+
+        .card-brand-text span {
+            color: var(--np-red);
+        }
+
+        /* =========================================
+           QUICK ACTIONS
+        ========================================= */
+
+        .quick-actions {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 12px;
+
+            margin-top: 17px;
+        }
+
+        .quick-action {
+            min-height: 112px;
+
+            padding: 16px;
+
+            border-radius: 21px;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+
+            text-align: left;
+
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quick-action.deposit {
+            background:
+                radial-gradient(
+                    circle at 100% 0%,
+                    rgba(255,255,255,.12),
+                    transparent 40%
+                ),
+                linear-gradient(
+                    140deg,
+                    #e50914,
+                    #a40008
+                );
+        }
+
+        .quick-action.send {
+            background: var(--np-card);
+
+            border: 1px solid var(--np-border);
+        }
+
+        .quick-icon {
+            width: 48px;
+            height: 48px;
+
+            border-radius: 15px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(0,0,0,.18);
+        }
+
+        .send .quick-icon {
+            background: rgba(229,9,20,.10);
+
+            color: var(--np-red-light);
+        }
+
+        .quick-icon svg {
+            width: 30px;
+            height: 30px;
+        }
+
+        .quick-title {
+            font-size: 16px;
+            font-weight: 750;
+        }
+
+        .quick-description {
+            margin-top: 2px;
+
+            font-size: 10px;
+
+            opacity: .72;
+        }
+
+        .quick-arrow {
+            position: absolute;
+
+            right: 13px;
+            bottom: 13px;
+
+            width: 28px;
+            height: 28px;
+
+            border-radius: 50%;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(0,0,0,.18);
+        }
+
+        .quick-arrow svg {
+            width: 15px;
+            height: 15px;
+        }
+
+        /* =========================================
+           TRANSACTIONS
+        ========================================= */
+
+        .section-header {
+            margin-top: 28px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 750;
+        }
+
+        .transactions {
+            margin-top: 13px;
+
+            overflow: hidden;
+
+            border-radius: 20px;
+
+            background: var(--np-card);
+
+            border: 1px solid var(--np-border);
+        }
+
+        .empty-transactions {
+            min-height: 105px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            gap: 7px;
+
+            color: var(--np-muted);
+        }
+
+        .empty-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 13px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(229,9,20,.08);
+
+            color: var(--np-red);
+        }
+
+        .empty-icon svg {
+            width: 21px;
+            height: 21px;
+        }
+
+        .empty-transactions span:last-child {
+            font-size: 12px;
+        }
+
+        .transaction {
+            min-height: 73px;
+
+            padding: 12px 14px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+        }
+
+        .transaction + .transaction {
+            border-top: 1px solid var(--np-border);
+        }
+
+        .transaction-icon {
+            width: 44px;
+            height: 44px;
+
+            min-width: 44px;
+
+            border-radius: 14px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(229,9,20,.09);
+
+            color: var(--np-red);
+        }
+
+        .transaction-icon svg {
+            width: 23px;
+            height: 23px;
+        }
+
+        .transaction-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .transaction-title {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .transaction-date {
+            margin-top: 3px;
+
+            color: var(--np-muted);
+
+            font-size: 10px;
+        }
+
+        .transaction-amount {
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .transaction-amount.in {
+            color: var(--np-green);
+        }
+
+        .transaction-amount.out {
+            color: var(--np-red-light);
+        }
+
+        /* =========================================
+           BOTTOM NAVIGATION
+        ========================================= */
+
+        .bottom-nav {
+            position: fixed;
+
+            z-index: 100;
+
+            left: 0;
+            right: 0;
+            bottom: 0;
+
+            min-height: 78px;
+
+            padding:
+                5px 6px
+                env(safe-area-inset-bottom);
+
+            background: rgba(7,7,7,.97);
+
+            border-top: 1px solid var(--np-border);
+
+            backdrop-filter: blur(18px);
+
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item {
+            flex: 1;
+
+            height: 67px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            gap: 5px;
+
+            background: transparent;
+
+            color: #707070;
+
+            font-size: 10px;
+            font-weight: 550;
+        }
+
+        .nav-item svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .nav-item.active {
+            color: var(--np-red);
+        }
+
+        .nav-item.active svg {
+            stroke-width: 2.5;
+        }
+
+        /* =========================================
+           TOAST
+        ========================================= */
+
+        .toast {
+            position: fixed;
+
+            z-index: 500;
+
+            left: 50%;
+            bottom: 92px;
+
+            transform:
+                translate(-50%, 15px);
+
+            opacity: 0;
+
+            pointer-events: none;
+
+            padding: 11px 16px;
+
+            border-radius: 12px;
+
+            background: #202020;
+
+            border: 1px solid var(--np-border);
+
+            color: white;
+
+            font-size: 12px;
+
+            white-space: nowrap;
+
+            transition: .25s ease;
+        }
+
+        .toast.show {
+            opacity: 1;
+
+            transform:
+                translate(-50%, 0);
+        }
+
+        /* =========================================
+           RESPONSIVE
+        ========================================= */
+
+        @media (max-width: 360px) {
+
+            .container {
+                padding-left: 12px;
+                padding-right: 12px;
+            }
+
+            .nexampay-card {
+                min-height: 220px;
+                padding: 17px;
+            }
+
+            .brand-logo {
+                width: 43px;
+                height: 43px;
+                flex-basis: 43px;
+            }
+
+            .card-balance-value {
+                font-size: 29px;
+            }
+
+            .quick-action {
+                min-height: 106px;
+                padding: 14px;
+            }
+
+            .quick-icon {
+                width: 44px;
+                height: 44px;
+            }
+
+            .quick-icon svg {
+                width: 27px;
+                height: 27px;
+            }
+
+            .quick-title {
+                font-size: 15px;
+            }
+
+        }
+
+    
+        .header-nexam-id{display:block;width:100%;padding:0;border:0;background:transparent;color:var(--np-red,#e50914);font-size:9px;font-weight:800;text-align:left;margin-top:3px;cursor:pointer}
+</style>
+</head>
+
+
+<body>
+
+
+    <!-- =========================================
+         SPLASH SCREEN
+    ========================================== -->
+
+    <div id="splashScreen">
+
+        <div class="splash-content">
+
+            <img
+                src="logo.png"
+                alt="NexamPay"
+                class="splash-logo"
+            >
+
+            <div class="splash-loader"></div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================================
+         HEADER
+    ========================================== -->
+
+    <header class="header">
+
+        <div class="header-brand">
+            <img
+                src="logo.png"
+                alt="NexamPay"
+                class="header-logo"
+            >
+
+            <div class="header-name">
+                Nexam<span>Pay</span>
+            </div>
+        </div>
+
+        <div class="telegram-header-profile">
+
+            <div class="header-profile-info">
+
+                <div
+                    id="headerTelegramName"
+                    class="header-telegram-name">
+                    Chargement...
+                </div>
+
+                <div
+                    id="headerTelegramNumber"
+                    class="header-telegram-number">
+                    Telegram
+                </div>
+
+                <button id="headerNexamId" class="header-nexam-id" type="button" style="display:none">NexamPay</button>
+
+            </div>
+
+            <img
+                id="headerProfilePhoto"
+                class="header-profile-photo"
+                src="logo.png"
+                alt="Profil Telegram"
+            >
+
+        </div>
+
+    </header>
+
+
+    <main class="container">
+
+
+        <!-- =====================================
+             CARTE NEXAMPAY
+        ====================================== -->
+
+        <section class="nexampay-card">
+
+
+            <div class="card-top">
+
+                <img
+                    src="logo.png"
+                    alt="NexamPay"
+                    class="brand-logo">
+
+            </div>
+
+
+            <div class="card-balance">
+
+                <div class="card-balance-label">
+                    Solde disponible
+                </div>
+
+                <div
+                    id="balance"
+                    class="card-balance-value">
+
+                    <span>—</span>
+
+                    <span
+                        id="balanceCurrency"
+                        class="card-balance-currency">
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <div class="card-bottom">
+
+                <div class="nexam-number-box">
+
+                    <div class="nexam-number-label">
+                        NexamPay Number
+                    </div>
+
+                    <div
+                        id="nexamNumber"
+                        class="nexam-number">
+                    </div>
+
+                </div>
+
+
+                <div class="card-brand-text">
+                    NEXAM<span>PAY</span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- =====================================
+             ACTIONS
+        ====================================== -->
+
+        <section class="quick-actions">
+
+
+            <!-- DÉPÔT -->
+
+            <button
+                class="quick-action deposit"
+                id="depositButton">
+
+                <div class="quick-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.7"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+
+                        <rect x="3"
+                              y="5"
+                              width="18"
+                              height="14"
+                              rx="2"/>
+
+                        <path d="M3 9h18"/>
+
+                        <circle cx="16.5"
+                                cy="14"
+                                r="2.5"/>
+
+                        <path d="M16.5 12.5v3"/>
+                        <path d="M15 14h3"/>
+
+                    </svg>
+
+                </div>
+
+
+                <div>
+
+                    <div class="quick-title">
+                        Dépôt
+                    </div>
+
+                    <div class="quick-description">
+                        Ajouter de l'argent
+                    </div>
+
+                </div>
+
+
+                <span class="quick-arrow">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+
+                        <path d="M9 18l6-6-6-6"/>
+
+                    </svg>
+
+                </span>
+
+            </button>
+
+
+            <!-- ENVOYER -->
+
+            <button
+                class="quick-action send"
+                id="sendButton">
+
+                <div class="quick-icon">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="1.7"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+
+                        <path d="M21 3L3 10l7 3 3 7L21 3z"/>
+
+                        <path d="M10 13l5-5"/>
+
+                    </svg>
+
+                </div>
+
+
+                <div>
+
+                    <div class="quick-title">
+                        Envoyer
+                    </div>
+
+                    <div class="quick-description">
+                        Transférer de l'argent
+                    </div>
+
+                </div>
+
+
+                <span class="quick-arrow">
+
+                    <svg viewBox="0 0 24 24"
+                         fill="none"
+                         stroke="currentColor"
+                         stroke-width="2"
+                         stroke-linecap="round"
+                         stroke-linejoin="round">
+
+                        <path d="M9 18l6-6-6-6"/>
+
+                    </svg>
+
+                </span>
+
+            </button>
+
+        </section>
+
+
+        <!-- =====================================
+             TRANSACTIONS RÉCENTES
+        ====================================== -->
+
+        <section>
+
+            <div class="section-header">
+
+                <h2 class="section-title">
+                    Transactions récentes
+                </h2>
+
+            </div>
+
+
+            <div
+                id="transactionsList"
+                class="transactions">
+
+                <div
+                    id="emptyTransactions"
+                    class="empty-transactions">
+
+                    <span class="empty-icon">
+
+                        <svg viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="currentColor"
+                             stroke-width="1.7"
+                             stroke-linecap="round"
+                             stroke-linejoin="round">
+
+                            <path d="M5 7h14"/>
+                            <path d="M5 12h14"/>
+                            <path d="M5 17h9"/>
+
+                        </svg>
+
+                    </span>
+
+                    <span>
+                        Aucune transaction récente
+                    </span>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =========================================
+         NAVIGATION
+    ========================================== -->
+
+    <nav class="bottom-nav">
+
+
+        <!-- ACCUEIL -->
+
+        <button
+            id="homeNav"
+            class="nav-item active">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <path d="M3 10.5L12 3l9 7.5"/>
+                <path d="M5 9.5V21h14V9.5"/>
+                <path d="M9 21v-6h6v6"/>
+
+            </svg>
+
+            <span>
+                Accueil
+            </span>
+
+        </button>
+
+
+        <!-- DÉPÔT -->
+
+        <button
+            id="depositNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <rect x="3"
+                      y="5"
+                      width="18"
+                      height="14"
+                      rx="2"/>
+
+                <path d="M12 9v6"/>
+                <path d="M9 12h6"/>
+
+            </svg>
+
+            <span>
+                Dépôt
+            </span>
+
+        </button>
+
+
+        <!-- RETRAIT -->
+
+        <button
+            id="withdrawNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <rect x="3"
+                      y="5"
+                      width="18"
+                      height="14"
+                      rx="2"/>
+
+                <path d="M12 8v8"/>
+                <path d="M9 13l3 3 3-3"/>
+
+            </svg>
+
+            <span>
+                Retrait
+            </span>
+
+        </button>
+
+
+        <!-- BOUTIQUE -->
+
+        <button
+            id="shopNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <path d="M4 9h16"/>
+                <path d="M5 9l1-5h12l1 5"/>
+
+                <path d="M5 9v10h14V9"/>
+
+                <path d="M9 19v-5h6v5"/>
+
+                <path d="M4 9a3 3 0 0 0 6 0"/>
+                <path d="M10 9a3 3 0 0 0 6 0"/>
+                <path d="M16 9a3 3 0 0 0 4 0"/>
+
+            </svg>
+
+            <span>
+                Boutique
+            </span>
+
+        </button>
+
+
+        <!-- PARAMÈTRES -->
+
+        <button
+            id="settingsNav"
+            class="nav-item">
+
+            <svg viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="1.9"
+                 stroke-linecap="round"
+                 stroke-linejoin="round">
+
+                <circle cx="12"
+                        cy="12"
+                        r="3"/>
+
+                <path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-1.7 1.7-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6v.1h-2.4v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1-1.7-1.7.1-.1a1.7 1.7 0 0 0 .3-1.9 1.7 1.7 0 0 0-1.6-1H6.8v-2.4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1 1.7-1.7.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.6V4.8h2.4v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1 1.7 1.7-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1h.1v2.4h-.1a1.7 1.7 0 0 0-1.6 1z"/>
+
+            </svg>
+
+            <span>
+                Paramètres
+            </span>
+
+        </button>
+
+    </nav>
+
+
+    <div
+        id="toast"
+        class="toast"
+        aria-live="polite">
+    </div>
+
+
+    <script>
+"use strict";
+
+const tg = window.NexamPayCore?.tg || window.Telegram?.WebApp || null;
+const state = { profile:null, wallet:null, transactions:[] };
+const $ = id => document.getElementById(id);
+
+function showToast(message){
+  const el=$("toast"); if(!el)return;
+  el.textContent=message; el.classList.add("show");
+  clearTimeout(window.__npToast);
+  window.__npToast=setTimeout(()=>el.classList.remove("show"),2200);
+}
+
+function escapeHTML(value){
+  return String(value??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#039;");
+}
+
+function renderProfile(){
+  const p=state.profile||{};
+  const name=[p.first_name,p.last_name].filter(Boolean).join(" ").trim()||"Utilisateur Telegram";
+  const username=p.telegram_username?`@${p.telegram_username}`:"Telegram";
+  if($("headerTelegramName")) $("headerTelegramName").textContent=name;
+  if($("headerTelegramNumber")) $("headerTelegramNumber").textContent=username;
+  if($("headerProfilePhoto")&&p.photo_url) $("headerProfilePhoto").src=p.photo_url;
+  if($("nexamNumber")) $("nexamNumber").textContent=p.nexampay_id||"—";
+  window.NexamPayCore?.attachCopyNumber(p);
+}
+
+function renderBalance(){
+  const el=$("balance"), cur=$("balanceCurrency"); if(!el)return;
+  const value=Number(state.wallet?.balance??state.profile?.wallet?.balance??0);
+  const currency=state.wallet?.currency_code||state.profile?.wallet?.currency_code||state.profile?.currency_code||"FCFA";
+  if(cur)cur.textContent=currency;
+  el.innerHTML=`<span>${value.toLocaleString("fr-FR",{maximumFractionDigits:2})}</span>`;
+}
+
+function renderTransactions(){
+  const list=$("transactionsList"), empty=$("emptyTransactions"); if(!list)return;
+  list.querySelectorAll(".transaction").forEach(x=>x.remove());
+  const items=Array.isArray(state.transactions)?state.transactions:[];
+  if(!items.length){if(empty)empty.style.display="flex";return;}
+  if(empty)empty.style.display="none";
+  items.slice(0,5).forEach(tx=>{
+    const amount=Number(tx.amount||0);
+    const type=String(tx.type||tx.direction||"").toLowerCase();
+    const incoming=tx.direction==="in"||["deposit","receive","received"].includes(type);
+    const row=document.createElement("div"); row.className="transaction";
+    row.innerHTML=`<div class="transaction-icon">${incoming?"+":"↗"}</div><div class="transaction-info"><div class="transaction-title">${escapeHTML(tx.description||tx.type||"Transaction")}</div><div class="transaction-date">${escapeHTML(tx.created_at||tx.date||"")}</div></div><div class="transaction-amount ${incoming?"in":"out"}">${incoming?"+":"-"}${amount.toLocaleString("fr-FR")} ${escapeHTML(tx.currency_code||tx.currency||state.wallet?.currency_code||"FCFA")}</div>`;
+    list.appendChild(row);
+  });
+}
+
+function hideSplash(){ $("splashScreen")?.classList.add("hide"); }
+
+async function loadIndex(){
+  try{
+    if(!window.NexamPayCore?.getInitData()) throw new Error("Ouvre NexamPay depuis Telegram.");
+    const auth=await window.NexamPayCore.authenticate();
+    if(auth?.is_new_user===true&&auth?.requires_country===true){
+      window.NexamPayCore.clearToken();
+      sessionStorage.setItem("nexampay_pending_init_data",window.NexamPayCore.getInitData());
+      window.location.replace("create-account.html");
+      return;
+    }
+    if(auth?.is_new_user!==false||!auth?.session_token) throw new Error("Authentification NexamPay invalide.");
+    const [profile,wallet,history]=await Promise.all([
+      window.NexamPayCore.getProfile(),
+      window.NexamPayCore.getWallet(),
+      window.NexamPayCore.request("/history/transactions?page=1&page_size=5")
+    ]);
+    state.profile=profile||{};
+    state.wallet=wallet||profile?.wallet||{};
+    state.transactions=Array.isArray(history?.items)?history.items:(Array.isArray(history)?history:[]);
+    renderProfile(); renderBalance(); renderTransactions();
+  }catch(error){
+    console.error("NexamPay index:",error);
+    showToast(error.message||"Impossible de charger NexamPay.");
+  }finally{ hideSplash(); }
+}
+
+function bindNavigation(){
+  $("depositButton")?.addEventListener("click",()=>location.href="deposit.html");
+  $("sendButton")?.addEventListener("click",()=>location.href="transfer.html");
+  $("homeNav")?.addEventListener("click",()=>location.href="index.html");
+  $("depositNav")?.addEventListener("click",()=>location.href="deposit.html");
+  $("withdrawNav")?.addEventListener("click",()=>location.href="withdraw.html");
+  $("shopNav")?.addEventListener("click",()=>location.href="shop.html");
+  $("settingsNav")?.addEventListener("click",()=>location.href="settings.html");
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+  bindNavigation();
+  setTimeout(hideSplash,1900);
+  setTimeout(hideSplash,5000);
+  loadIndex();
+});
+</script>
+
+</body>
+</html>

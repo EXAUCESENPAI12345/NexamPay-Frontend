@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#070707">
+<title>Paramètres — NexamPay</title>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{
+ --red:#e50914;--red2:#ff3038;--bg:#070707;--card:#111;--card2:#171717;
+ --text:#f5f5f5;--muted:#8b8b8b;--border:rgba(255,255,255,.08)
+}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{padding-bottom:88px}
+button,input{font:inherit}
+button{border:0;outline:0;color:inherit;cursor:pointer}
+svg{display:block}
+.header{
+ height:72px;padding:0 15px;display:flex;align-items:center;gap:11px;
+ border-bottom:1px solid var(--border);background:rgba(7,7,7,.96);
+ position:sticky;top:0;z-index:20;backdrop-filter:blur(18px)
+}
+.back{
+ width:42px;height:42px;border-radius:14px;background:var(--card);
+ border:1px solid var(--border);display:grid;place-items:center
+}
+.back svg{width:20px;height:20px}
+.header-title{font-size:19px;font-weight:850;flex:1}
+.header-logo{width:38px;height:38px;object-fit:contain}
+.container{max-width:620px;margin:auto;padding:16px 15px 25px}
+.profile{
+ padding:17px;border-radius:22px;background:linear-gradient(145deg,#171717,#0e0e0e);
+ border:1px solid var(--border);position:relative;overflow:hidden
+}
+.profile:after{
+ content:"";position:absolute;width:145px;height:145px;right:-80px;top:-75px;
+ border-radius:50%;background:rgba(229,9,20,.08)
+}
+.profile-row{display:flex;align-items:center;gap:13px;position:relative;z-index:1}
+.photo{
+ width:62px;height:62px;min-width:62px;border-radius:19px;object-fit:cover;
+ background:#202020;border:1px solid rgba(229,9,20,.28)
+}
+.profile-name{font-size:16px;font-weight:850;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:245px}
+.profile-sub{margin-top:4px;color:var(--muted);font-size:9px}
+.nxp-id{
+ display:inline-flex;margin-top:8px;padding:5px 9px;border-radius:8px;
+ color:var(--red2);background:rgba(229,9,20,.08);font-size:8px;font-weight:800
+}
+.section{margin-top:20px}
+.section-title{
+ margin:0 4px 8px;color:#707070;font-size:9px;font-weight:850;
+ letter-spacing:.9px;text-transform:uppercase
+}
+.box{overflow:hidden;border:1px solid var(--border);border-radius:20px;background:var(--card)}
+.item{
+ width:100%;min-height:69px;padding:11px 13px;display:flex;align-items:center;gap:12px;
+ background:transparent;border-bottom:1px solid var(--border);text-align:left
+}
+.item:last-child{border-bottom:0}
+.item:active{background:rgba(255,255,255,.025)}
+.icon{
+ width:42px;height:42px;min-width:42px;border-radius:14px;background:var(--card2);
+ display:grid;place-items:center;color:#d0d0d0
+}
+.icon svg{width:20px;height:20px}
+.info{min-width:0;flex:1}
+.name{font-size:12px;font-weight:800}
+.desc{margin-top:3px;color:var(--muted);font-size:8.5px;line-height:1.4}
+.value{
+ max-width:90px;color:#999;font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+ text-align:right
+}
+.chevron{width:17px;height:17px;color:#555}
+.logout .icon{color:var(--red2);background:rgba(229,9,20,.08)}
+.logout .name{color:var(--red2)}
+.about{
+ padding:18px;border-radius:20px;background:linear-gradient(145deg,#151515,#0d0d0d);
+ border:1px solid var(--border)
+}
+.about-brand{display:flex;align-items:center;gap:12px}
+.about-logo{width:50px;height:50px;object-fit:contain;border-radius:15px}
+.about-title{font-size:16px;font-weight:850}
+.about-sub{margin-top:3px;color:var(--muted);font-size:8.5px}
+.about-text{margin-top:14px;color:#aaa;font-size:10px;line-height:1.65}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:13px}
+.stat{padding:12px;border-radius:14px;background:#0a0a0a;border:1px solid var(--border);text-align:center}
+.stat strong{font-size:17px;font-weight:850}
+.stat span{display:block;margin-top:3px;color:#777;font-size:7.5px}
+.developer{margin-top:8px;padding:11px;border-radius:14px;background:rgba(229,9,20,.05);border:1px solid rgba(229,9,20,.12);text-align:center}
+.developer small{display:block;color:#777;font-size:7.5px}
+.developer strong{display:block;margin-top:3px;color:var(--red2);font-size:12px}
+.version{text-align:center;margin-top:11px;color:#4f4f4f;font-size:7.5px;user-select:none}
+.nav{
+ position:fixed;left:0;right:0;bottom:0;z-index:30;min-height:78px;
+ padding:4px 5px env(safe-area-inset-bottom);display:flex;
+ background:rgba(7,7,7,.97);border-top:1px solid var(--border);backdrop-filter:blur(18px)
+}
+.nav button{
+ flex:1;height:66px;background:transparent;color:#707070;display:flex;flex-direction:column;
+ align-items:center;justify-content:center;gap:5px;font-size:9px;font-weight:650
+}
+.nav button svg{width:23px;height:23px}
+.nav .active{color:var(--red)}
+.modal{
+ position:fixed;inset:0;z-index:100;display:none;align-items:flex-end;
+ background:rgba(0,0,0,.74);backdrop-filter:blur(9px)
+}
+.modal.active{display:flex}
+.modal-card{
+ width:100%;max-width:620px;margin:auto auto 0;padding:19px 16px calc(18px + env(safe-area-inset-bottom));
+ border-radius:24px 24px 0 0;background:#111;border-top:1px solid var(--border);
+ animation:up .23s ease
+}
+@keyframes up{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.handle{width:40px;height:4px;border-radius:9px;background:#333;margin:0 auto 17px}
+.modal-title{font-size:18px;font-weight:850}
+.modal-text{margin-top:5px;color:var(--muted);font-size:9.5px;line-height:1.55}
+.options{display:grid;gap:7px;margin-top:15px}
+.option{
+ min-height:52px;width:100%;padding:0 12px;border-radius:13px;background:#181818;
+ border:1px solid var(--border);display:flex;align-items:center;gap:10px;text-align:left
+}
+.option.active{border-color:rgba(229,9,20,.45);background:rgba(229,9,20,.07)}
+.option-icon{
+ width:34px;height:34px;border-radius:10px;background:#222;display:grid;place-items:center;
+ font-size:9px;font-weight:850;color:#aaa
+}
+.option.active .option-icon{background:rgba(229,9,20,.10);color:var(--red2)}
+.option span{flex:1;font-size:11px;font-weight:750}
+.check{width:18px;height:18px;color:var(--red2);display:none}
+.option.active .check{display:block}
+.close,.primary{
+ width:100%;height:48px;margin-top:10px;border-radius:13px;font-size:10.5px;font-weight:800
+}
+.close{background:#1a1a1a;border:1px solid var(--border);color:#aaa}
+.primary{background:linear-gradient(135deg,var(--red2),#a80008)}
+.admin-code-input{
+ width:100%;height:48px;margin-top:15px;padding:0 13px;border-radius:13px;
+ border:1px solid var(--border);outline:none;background:#181818;color:#fff;
+ font-size:12px;font-weight:700
+}
+.admin-code-input:focus{border-color:rgba(229,9,20,.55)}
+.admin-code-input::placeholder{color:#666}
+.admin-error{min-height:15px;margin-top:7px;color:var(--red2);font-size:9px;font-weight:700;text-align:center}
+.toast{
+ position:fixed;z-index:200;left:50%;bottom:92px;transform:translate(-50%,12px);
+ opacity:0;padding:10px 15px;border-radius:12px;background:#202020;border:1px solid var(--border);
+ color:#fff;font-size:10px;transition:.25s;pointer-events:none;white-space:nowrap
+}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(min-width:700px){.nav{left:50%;right:auto;width:620px;transform:translateX(-50%);border-radius:18px 18px 0 0}}
+</style>
+    <script src="nexampay-core.js"></script>
+</head>
+<body>
+
+<header class="header">
+<button class="back" id="back" aria-label="Retour">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+</button>
+<div class="header-title">Paramètres</div>
+<img src="logo.png" class="header-logo" alt="NexamPay">
+</header>
+
+<main class="container">
+
+<section class="profile">
+<div class="profile-row">
+<img id="profilePhoto" class="photo" src="logo.png" alt="Profil Telegram">
+<div style="min-width:0">
+<div id="profileName" class="profile-name">Chargement...</div>
+<div id="profileSub" class="profile-sub">Profil Telegram</div>
+<div id="nexamId" class="nxp-id"></div>
+</div>
+</div>
+</section>
+
+<section class="section">
+<div class="section-title">Préférences</div>
+<div class="box">
+
+<button class="item" id="languageBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M3 12h18"/><path d="M12 3c3 3.1 3 14.9 0 18"/><path d="M7.5 5.3c1.2.6 2.8 1 4.5 1s3.3-.4 4.5-1M7.5 18.7c1.2-.6 2.8-1 4.5-1s3.3.4 4.5 1"/></svg></div>
+<div class="info"><div class="name">Langue</div><div class="desc">Choisissez la langue de NexamPay.</div></div>
+<span class="value" id="languageValue">Français</span>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<button class="item" id="currencyBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M8 9.5c0-1.1 1.8-2 4-2s4 .9 4 2-1.8 2-4 2-4 .9-4 2 1.8 2 4 2 4-.9 4-2"/></svg></div>
+<div class="info"><div class="name">Devise</div><div class="desc">Devise utilisée dans votre portefeuille.</div></div>
+<span class="value" id="currencyValue">FCFA</span>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<button class="item" id="colorBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 0 18h1.5a2.2 2.2 0 0 0 0-4.4h-1a1.8 1.8 0 0 1 0-3.6H15a6 6 0 0 0 0-10H12z"/><circle cx="7.5" cy="10" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="14" cy="7" r="1"/></svg></div>
+<div class="info"><div class="name">Couleur</div><div class="desc">Personnalisez la couleur de l'interface.</div></div>
+<span class="value" id="colorValue">NexamPay</span>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<button class="item" id="themeBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3 6.8 6.8 0 0 0 21 12.8z"/></svg></div>
+<div class="info"><div class="name">Thème</div><div class="desc">Choisissez l'apparence claire ou sombre.</div></div>
+<span class="value" id="themeValue">Sombre</span>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+</div>
+</section>
+
+<section class="section">
+<div class="section-title">Aide</div>
+<div class="box">
+
+<button class="item" id="supportBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 12a8 8 0 0 1 16 0"/><path d="M4 12v5a2 2 0 0 0 2 2h2v-6H4"/><path d="M20 12v5a2 2 0 0 1-2 2h-2v-6h4"/></svg></div>
+<div class="info"><div class="name">Support</div><div class="desc">Contacter l'équipe NexamPay.</div></div>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<button class="item" id="faqBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4.5 1.6c-.8.9-2 1.2-2 2.7"/><path d="M12 17h.01"/></svg></div>
+<div class="info"><div class="name">FAQ / Questions</div><div class="desc">Questions fréquentes et aide NexamPay.</div></div>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+<button class="item" id="channelBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 4 3 11l7 2 2 7 9-16z"/><path d="m10 13 4-3"/></svg></div>
+<div class="info"><div class="name">Canal d'annonces</div><div class="desc">Actualités et annonces officielles NexamPay.</div></div>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+
+</div>
+</section>
+
+<section class="section">
+<div class="section-title">NexamPay</div>
+<div class="about">
+<div class="about-brand">
+<img src="logo.png" class="about-logo" alt="NexamPay">
+<div><div class="about-title">NexamPay</div><div class="about-sub">Portefeuille numérique</div></div>
+</div>
+<div class="about-text">NexamPay permet de gérer les services et opérations disponibles dans votre pays depuis Telegram.</div>
+<div class="stats">
+<div class="stat"><strong id="countryCount">—</strong><span>Pays disponibles</span></div>
+<div class="stat"><strong id="networkCount">—</strong><span>Réseaux disponibles</span></div>
+</div>
+<div class="developer"><small>Développeur</small><strong>EXAUCE</strong></div>
+<div class="version" id="versionTrigger">NexamPay · Version</div>
+</div>
+</section>
+
+<section class="section">
+<div class="box">
+<button class="item logout" id="logoutBtn">
+<div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 17l5-5-5-5"/><path d="M15 12H3"/><path d="M20 4v16"/></svg></div>
+<div class="info"><div class="name">Déconnexion</div><div class="desc">Quitter votre compte NexamPay.</div></div>
+<svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+</button>
+</div>
+</section>
+
+</main>
+
+<nav class="nav">
+<button id="navHome"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="m3 10.5 9-7.5 9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M9 21v-6h6v6"/></svg><span>Accueil</span></button>
+<button id="navDeposit"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 9v6M9 12h6"/></svg><span>Dépôt</span></button>
+<button id="navWithdraw"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M12 8v8M9 13l3 3 3-3"/></svg><span>Retrait</span></button>
+<button id="navShop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M4 9h16l-1 10H5L4 9Z"/><path d="M7 9l1-5h8l1 5"/><path d="M9 19v-5h6v5"/></svg><span>Boutique</span></button>
+<button class="active" id="navSettings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><circle cx="12" cy="12" r="3"/><path d="M19 15a2 2 0 0 0 .4 2l.1.1-1.6 1.6-.1-.1a2 2 0 0 0-2-.4 2 2 0 0 0-1.2 1.8v.1h-2.3V20a2 2 0 0 0-1.2-1.8 2 2 0 0 0-2 .4l-.1.1-1.6-1.6.1-.1a2 2 0 0 0 .4-2 2 2 0 0 0-1.8-1.2h-.1v-2.3H6a2 2 0 0 0-1.8-1.2 2 2 0 0 0 .4-2l-.1-.1 1.6-1.6.1.1a2 2 0 0 0 2 .4A2 2 0 0 0 9 7.1V5h2.3v1a2 2 0 0 0 1.2 1.8 2 2 0 0 0 2-.4l.1-.1 1.6 1.6-.1.1a2 2 0 0 0-.4 2 2 0 0 0 1.8 1.2h.1v2.3h-.1A2 2 0 0 0 19 15Z"/></svg><span>Paramètres</span></button>
+</nav>
+
+<!-- Generic information modal -->
+<div class="modal" id="infoModal">
+<div class="modal-card">
+<div class="handle"></div>
+<div class="modal-title" id="infoTitle"></div>
+<div class="modal-text" id="infoText"></div>
+<button class="primary" id="infoAction">Ouvrir</button>
+<button class="close" data-close="infoModal">Fermer</button>
+</div>
+</div>
+
+<!-- Language -->
+<div class="modal" id="languageModal">
+<div class="modal-card"><div class="handle"></div><div class="modal-title">Langue</div><div class="modal-text">Choisissez la langue de l'interface.</div>
+<div class="options">
+<button class="option active" data-lang="fr"><div class="option-icon">FR</div><span>Français</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+<button class="option" data-lang="en"><div class="option-icon">EN</div><span>English</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+</div><button class="close" data-close="languageModal">Fermer</button></div>
+</div>
+
+<!-- Currency -->
+<div class="modal" id="currencyModal">
+<div class="modal-card"><div class="handle"></div><div class="modal-title">Devise</div><div class="modal-text">Les devises disponibles seront fournies par le backend.</div>
+<div class="options" id="currencyOptions"></div><button class="close" data-close="currencyModal">Fermer</button></div>
+</div>
+
+<!-- Color -->
+<div class="modal" id="colorModal">
+<div class="modal-card"><div class="handle"></div><div class="modal-title">Couleur</div><div class="modal-text">Choisissez la couleur principale de NexamPay.</div>
+<div class="options">
+<button class="option active" data-color="nexam"><div class="option-icon">N</div><span>Rouge NexamPay</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+<button class="option" data-color="green"><div class="option-icon">V</div><span>Vert</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+<button class="option" data-color="white"><div class="option-icon">B</div><span>Blanc</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+<button class="option" data-color="black"><div class="option-icon">N</div><span>Noir</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+<button class="option" data-color="pink"><div class="option-icon">R</div><span>Rose</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+</div><button class="close" data-close="colorModal">Fermer</button></div>
+</div>
+
+<!-- Theme -->
+<div class="modal" id="themeModal">
+<div class="modal-card"><div class="handle"></div><div class="modal-title">Thème</div><div class="modal-text">Choisissez l'apparence de la Mini App.</div>
+<div class="options">
+<button class="option active" data-theme="dark"><div class="option-icon">S</div><span>Sombre</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+<button class="option" data-theme="light"><div class="option-icon">C</div><span>Clair</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg></button>
+</div><button class="close" data-close="themeModal">Fermer</button></div>
+</div>
+
+<!-- Logout -->
+<div class="modal" id="logoutModal">
+<div class="modal-card"><div class="handle"></div><div class="modal-title">Déconnexion</div><div class="modal-text">Voulez-vous vraiment quitter votre compte NexamPay ?</div>
+<button class="primary" id="confirmLogout">Se déconnecter</button><button class="close" data-close="logoutModal">Annuler</button></div>
+</div>
+
+<!-- Accès administrateur : apparaît après 3 appuis sur la version. -->
+<div class="modal" id="adminModal">
+<div class="modal-card">
+<div class="handle"></div>
+<div class="modal-title">Administration</div>
+<div class="modal-text">Entrez le code d'accès administrateur pour ouvrir l'espace d'administration.</div>
+
+<input
+    id="adminAccessCode"
+    class="admin-code-input"
+    type="password"
+    inputmode="text"
+    autocomplete="off"
+    placeholder="Code d'accès"
+    aria-label="Code d'accès administrateur"
+>
+
+<div id="adminError" class="admin-error"></div>
+
+<button class="primary" id="adminContinue">Accéder à l'administration</button>
+<button class="close" data-close="adminModal">Annuler</button>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const tg=window.Telegram?.WebApp||null;
+if(tg){tg.ready();tg.expand();}
+
+const state={
+ language:localStorage.getItem("nexampay_language")||"fr",
+ currency:localStorage.getItem("nexampay_currency")||"FCFA",
+ color:localStorage.getItem("nexampay_color")||"nexam",
+ theme:localStorage.getItem("nexampay_theme")||"dark"
+};
+
+const API={
+ profile:"/api/user/profile",
+ settings:"/api/user/settings",
+ currencies:"/api/currencies",
+ countries:"/api/countries",
+ networks:"/api/networks",
+ logout:"/api/auth/logout"
+};
+
+const authHeaders=()=>({
+ "Content-Type":"application/json",
+ "Authorization":`Telegram ${tg?.initData||""}`,
+ "X-Telegram-Init-Data":tg?.initData||""
+});
+
+function modal(id,open=true){document.getElementById(id)?.classList.toggle("active",open)}
+function toast(text){const el=document.getElementById("toast");el.textContent=text;el.classList.add("show");clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove("show"),2200)}
+function setColor(name){
+ const colors={nexam:"#e50914",green:"#16a765",white:"#e8e8e8",black:"#111111",pink:"#ed3b8d"};
+ const c=colors[name]||colors.nexam;
+ document.documentElement.style.setProperty("--red",c);
+ document.documentElement.style.setProperty("--red2",c);
+}
+function setTheme(name){
+ if(name==="light"){
+  document.documentElement.style.setProperty("--bg","#f5f5f7");
+  document.documentElement.style.setProperty("--card","#ffffff");
+  document.documentElement.style.setProperty("--card2","#f0f0f2");
+  document.documentElement.style.setProperty("--text","#111111");
+  document.documentElement.style.setProperty("--muted","#707070");
+  document.documentElement.style.setProperty("--border","rgba(0,0,0,.08)");
+ }else{
+  document.documentElement.style.setProperty("--bg","#070707");
+  document.documentElement.style.setProperty("--card","#111111");
+  document.documentElement.style.setProperty("--card2","#171717");
+  document.documentElement.style.setProperty("--text","#f5f5f5");
+  document.documentElement.style.setProperty("--muted","#8b8b8b");
+  document.documentElement.style.setProperty("--border","rgba(255,255,255,.08)");
+ }
+}
+function updateUI(){
+ document.getElementById("languageValue").textContent=state.language==="en"?"English":"Français";
+ document.getElementById("currencyValue").textContent=state.currency;
+ const colors={nexam:"NexamPay",green:"Vert",white:"Blanc",black:"Noir",pink:"Rose"};
+ document.getElementById("colorValue").textContent=colors[state.color]||"NexamPay";
+ document.getElementById("themeValue").textContent=state.theme==="light"?"Clair":"Sombre";
+ setColor(state.color);setTheme(state.theme);
+ document.querySelectorAll("[data-lang]").forEach(x=>x.classList.toggle("active",x.dataset.lang===state.language));
+ document.querySelectorAll("[data-color]").forEach(x=>x.classList.toggle("active",x.dataset.color===state.color));
+ document.querySelectorAll("[data-theme]").forEach(x=>x.classList.toggle("active",x.dataset.theme===state.theme));
+}
+async function saveSettings(){
+ try{
+  await fetch(API.settings,{method:"PUT",headers:authHeaders(),body:JSON.stringify(state)});
+ }catch(e){}
+}
+function loadTelegram(){
+ const u=tg?.initDataUnsafe?.user;
+ if(!u)return;
+ const name=[u.first_name,u.last_name].filter(Boolean).join(" ")||"Utilisateur Telegram";
+ document.getElementById("profileName").textContent=name;
+ document.getElementById("profileSub").textContent=u.username?`@${u.username}`:"Profil Telegram";
+ if(u.photo_url)document.getElementById("profilePhoto").src=u.photo_url;
+}
+async function loadProfile(){
+ try{
+  const r=await fetch(API.profile,{headers:authHeaders()});
+  if(!r.ok)return;
+  const d=await r.json();const u=d.user||d;
+  const id=u.nexampay_id||u.nexam_id||u.nexam_number;
+  if(id)document.getElementById("nexamId").textContent=id;
+ }catch(e){}
+}
+async function loadCurrencies(){
+ const box=document.getElementById("currencyOptions");
+ try{
+  const r=await fetch(API.currencies,{headers:authHeaders()});
+  if(!r.ok)throw 0;
+  const d=await r.json();const list=Array.isArray(d)?d:(d.currencies||[]);
+  if(!list.length){box.innerHTML='<div class="modal-text">Aucune devise disponible.</div>';return}
+  box.innerHTML="";
+  list.forEach(item=>{
+   const code=typeof item==="string"?item:item.code;
+   if(!code)return;
+   const b=document.createElement("button");b.className="option";b.dataset.currency=code;
+   b.innerHTML=`<div class="option-icon">¤</div><span>${code}</span><svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m5 12 4 4L19 6"/></svg>`;
+   b.onclick=()=>{state.currency=code;localStorage.setItem("nexampay_currency",code);updateUI();saveSettings();modal("currencyModal",false)};
+   box.appendChild(b);
+  });
+  updateUI();
+ }catch(e){box.innerHTML='<div class="modal-text">Impossible de charger les devises disponibles.</div>'}
+}
+async function loadCounts(){
+ try{
+  const [a,b]=await Promise.all([
+   fetch(API.countries,{headers:authHeaders()}),
+   fetch(API.networks,{headers:authHeaders()})
+  ]);
+  if(a.ok){const d=await a.json();const list=Array.isArray(d)?d:(d.countries||[]);document.getElementById("countryCount").textContent=list.length||"—"}
+  if(b.ok){const d=await b.json();const list=Array.isArray(d)?d:(d.networks||[]);document.getElementById("networkCount").textContent=list.length||"—"}
+ }catch(e){}
+}
+function info(title,text){
+ document.getElementById("infoTitle").textContent=title;
+ document.getElementById("infoText").textContent=text;
+ document.getElementById("infoAction").onclick=()=>toast("Cette fonction sera reliée au service NexamPay.");
+ modal("infoModal");
+}
+
+document.getElementById("languageBtn").onclick=()=>modal("languageModal");
+document.getElementById("currencyBtn").onclick=()=>modal("currencyModal");
+document.getElementById("colorBtn").onclick=()=>modal("colorModal");
+document.getElementById("themeBtn").onclick=()=>modal("themeModal");
+document.querySelectorAll("[data-lang]").forEach(b=>b.onclick=()=>{state.language=b.dataset.lang;localStorage.setItem("nexampay_language",state.language);updateUI();saveSettings();modal("languageModal",false)});
+document.querySelectorAll("[data-color]").forEach(b=>b.onclick=()=>{state.color=b.dataset.color;localStorage.setItem("nexampay_color",state.color);updateUI();saveSettings();modal("colorModal",false)});
+document.querySelectorAll("[data-theme]").forEach(b=>b.onclick=()=>{state.theme=b.dataset.theme;localStorage.setItem("nexampay_theme",state.theme);updateUI();saveSettings();modal("themeModal",false)});
+
+document.getElementById("supportBtn").onclick=()=>info("Support","L'assistance NexamPay vous aidera pour les services disponibles.");
+document.getElementById("faqBtn").onclick=()=>info("FAQ / Questions","Retrouvez les réponses aux questions fréquentes concernant NexamPay.");
+document.getElementById("channelBtn").onclick=()=>info("Canal d'annonces","Les annonces officielles NexamPay seront disponibles depuis ce canal.");
+
+document.getElementById("logoutBtn").onclick=()=>modal("logoutModal");
+document.getElementById("confirmLogout").onclick=async()=>{
+ try{await fetch(API.logout,{method:"POST",headers:authHeaders()})}catch(e){}
+ if(tg)tg.close();else location.href="index.html";
+};
+
+document.querySelectorAll("[data-close]").forEach(b=>b.onclick=()=>modal(b.dataset.close,false));
+document.querySelectorAll(".modal").forEach(m=>m.addEventListener("click",e=>{if(e.target===m)m.classList.remove("active")}));
+
+document.getElementById("back").onclick=()=>location.href="index.html";
+document.getElementById("navHome").onclick=()=>location.href="index.html";
+document.getElementById("navDeposit").onclick=()=>location.href="deposit.html";
+document.getElementById("navWithdraw").onclick=()=>location.href="withdraw.html";
+document.getElementById("navShop").onclick=()=>location.href="shop.html";
+
+let taps=0,tapTimer=null;
+
+const ADMIN_ACCESS_CODE=null;
+const adminCodeInput=document.getElementById("adminAccessCode");
+const adminError=document.getElementById("adminError");
+
+document.getElementById("versionTrigger").addEventListener("click",()=>{
+ taps++;
+ clearTimeout(tapTimer);
+ tapTimer=setTimeout(()=>taps=0,1800);
+
+ if(taps>=3){
+  taps=0;
+  adminCodeInput.value="";
+  adminError.textContent="";
+  modal("adminModal");
+  setTimeout(()=>adminCodeInput.focus(),180);
+ }
+});
+
+document.getElementById("adminContinue").onclick=async()=>{
+ const entered=adminCodeInput.value.trim();
+ const initData=tg?.initData||"";
+ if(!entered){adminError.textContent="Veuillez saisir votre code administrateur.";return;}
+ if(!initData){adminError.textContent="Ouvrez NexamPay depuis Telegram.";return;}
+ const btn=document.getElementById("adminContinue");
+ btn.disabled=true;
+ try{
+   const r=await fetch("/api/v1/admin/auth",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({code:entered,telegram_init_data:initData})});
+   const d=await r.json().catch(()=>({}));
+   if(!r.ok||d.authorized!==true) throw new Error(d.detail||d.message||"Accès administrateur refusé.");
+   adminError.textContent="";
+   modal("adminModal",false);
+   location.href="admin.html";
+ }catch(e){
+   adminError.textContent=e.message||"Code administrateur incorrect.";
+   adminCodeInput.value="";
+   adminCodeInput.focus();
+ }finally{btn.disabled=false;}
+};
+
+adminCodeInput.addEventListener("keydown",(event)=>{
+ if(event.key==="Enter"){
+  event.preventDefault();
+  document.getElementById("adminContinue").click();
+ }
+});
+
+loadTelegram();loadProfile();loadCurrencies();loadCounts();updateUI();
+</script>
+</body>
+</html>

@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#050505">
+<title>Carte virtuelle — NexamPay</title>
+<style>
+:root{--red:#e50914;--red2:#ff2934;--black:#050505;--border:rgba(255,255,255,.08)}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{min-height:100%;background:#050505;color:#fff;font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif}
+body{overflow-x:hidden}button{font:inherit;border:0;outline:0}
+.app{width:100%;max-width:540px;min-height:100vh;margin:auto;padding:18px 17px 35px}
+.header{display:flex;align-items:center;justify-content:space-between;margin-bottom:27px}
+.back,.header-action{width:43px;height:43px;display:flex;align-items:center;justify-content:center;border-radius:14px;background:#151515;border:1px solid var(--border);color:#fff;cursor:pointer}
+.back{font-size:25px}.header-action{font-size:18px}
+.header-title{text-align:center}.header-title small{display:block;margin-bottom:4px;color:var(--red);font-size:8px;font-weight:900;letter-spacing:1.8px}.header-title strong{font-size:19px;font-weight:850}
+.virtual-card{position:relative;width:100%;aspect-ratio:1.62/1;overflow:hidden;padding:20px;border-radius:24px;background:radial-gradient(circle at 93% 5%,rgba(229,9,20,.72),transparent 35%),radial-gradient(circle at 76% 100%,rgba(229,9,20,.22),transparent 32%),linear-gradient(135deg,#242424 0%,#111 46%,#080808 100%);border:1px solid rgba(255,255,255,.11);box-shadow:0 26px 65px rgba(0,0,0,.55);animation:float 4s ease-in-out infinite}
+.virtual-card:before,.virtual-card:after{content:"";position:absolute;pointer-events:none;border:1px solid rgba(255,255,255,.055);border-radius:50%;transform:rotate(-28deg)}
+.virtual-card:before{width:75%;height:150%;top:-28%;right:-22%}.virtual-card:after{width:55%;height:135%;top:-18%;right:-10%}
+.card-top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between}
+.nexam-logo{display:flex;align-items:center;gap:8px}.np{font-size:28px;font-weight:950;letter-spacing:-8px;transform:skewX(-8deg)}.np span:last-child{color:var(--red)}
+.virtual-text{font-size:9px;font-weight:700;color:#aaa;letter-spacing:1px}.contactless{font-size:21px;transform:rotate(90deg);opacity:.85}
+.chip{position:absolute;z-index:2;left:20px;top:34%;width:48px;height:37px;border-radius:8px;background:linear-gradient(135deg,#e8d09a,#fff0bc,#ae9151)}.chip:before,.chip:after{content:"";position:absolute;background:rgba(65,48,20,.36)}.chip:before{width:1px;height:100%;left:50%}.chip:after{width:100%;height:1px;top:50%}
+.card-number{position:absolute;z-index:2;left:20px;right:20px;top:54%;font-size:19px;font-weight:600;letter-spacing:3.5px}
+.card-info{position:absolute;z-index:2;left:20px;right:20px;bottom:18px;display:grid;grid-template-columns:1.5fr .7fr .8fr;align-items:end;gap:10px}
+.info-label{display:block;margin-bottom:4px;color:#777;font-size:6px;font-weight:800;letter-spacing:1px}.info-value{display:block;color:#eee;font-size:10px;font-weight:700}.visa{justify-self:end;color:#fff;font-size:27px;font-weight:950;font-style:italic;letter-spacing:-2px}
+.balance{margin-top:20px;padding:19px;border-radius:22px;background:linear-gradient(145deg,#171717,#0d0d0d);border:1px solid var(--border)}
+.balance-head{display:flex;align-items:center;justify-content:space-between}.balance-label{color:#777;font-size:9px;font-weight:750;letter-spacing:.8px;text-transform:uppercase}.balance-currency{color:var(--red);font-size:9px;font-weight:800}.balance-value{margin-top:9px;font-size:26px;font-weight:900}.balance-sub{margin-top:6px;color:#666;font-size:8px}
+.actions{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:22px}.action{display:flex;flex-direction:column;align-items:center;gap:8px;background:none;color:#fff;cursor:pointer}.action-icon{width:54px;height:54px;display:flex;align-items:center;justify-content:center;border-radius:17px;background:#151515;border:1px solid var(--border);color:var(--red);font-size:20px;transition:.16s}.action:active .action-icon{transform:scale(.91)}.action span:last-child{color:#bbb;font-size:8px;line-height:1.35;text-align:center}
+.options{margin-top:24px;overflow:hidden;border-radius:21px;background:#111;border:1px solid var(--border)}.option{min-height:70px;display:flex;align-items:center;gap:12px;padding:13px 15px;border-bottom:1px solid rgba(255,255,255,.06)}.option:last-child{border-bottom:0}.option-icon{width:38px;height:38px;flex:0 0 38px;display:flex;align-items:center;justify-content:center;border-radius:12px;background:#181818;color:var(--red);font-size:17px}.option-text{min-width:0;flex:1}.option-text strong{display:block;font-size:11px}.option-text small{display:block;margin-top:4px;color:#666;font-size:8px}.toggle{position:relative;width:46px;height:27px;flex:0 0 46px;border-radius:99px;background:#303030;cursor:pointer}.toggle:after{content:"";position:absolute;top:4px;left:4px;width:19px;height:19px;border-radius:50%;background:#eee;transition:.22s}.toggle.active{background:var(--red)}.toggle.active:after{transform:translateX(19px)}
+.state-message{margin-top:18px;padding:14px;border-radius:16px;background:#111;border:1px solid var(--border);color:#666;font-size:9px;line-height:1.6;text-align:center}
+.layer{position:fixed;inset:0;z-index:50;display:none;align-items:flex-end}.layer.open{display:flex}.backdrop{position:absolute;inset:0;background:rgba(0,0,0,.84);backdrop-filter:blur(8px)}.sheet{position:relative;z-index:2;width:100%;max-width:540px;max-height:88vh;margin:auto auto 0;overflow:auto;padding:20px 17px 28px;border-radius:28px 28px 0 0;background:linear-gradient(145deg,#181818,#080808);border-top:1px solid rgba(229,9,20,.2);animation:sheet .3s ease both}.sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:17px}.sheet-head small{color:var(--red);font-size:8px;font-weight:900;letter-spacing:1.7px}.sheet-head h2{margin-top:5px;font-size:19px}.close{width:36px;height:36px;border-radius:12px;background:#171717;border:1px solid var(--border);color:#aaa;font-size:21px}.row{display:flex;justify-content:space-between;gap:18px;padding:14px 0;border-bottom:1px solid rgba(255,255,255,.06)}.row span:first-child{color:#777;font-size:9px}.row span:last-child{color:#eee;font-size:10px;font-weight:700;text-align:right}.notice{margin-top:15px;padding:13px;border-radius:14px;background:#151515;border:1px solid var(--border);color:#666;font-size:8px;line-height:1.6}.sheet-button{width:100%;height:51px;margin-top:15px;border-radius:15px;background:linear-gradient(135deg,var(--red2),#98040b);color:#fff;font-size:10px;font-weight:800}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}@keyframes sheet{from{opacity:0;transform:translateY(100%)}to{opacity:1;transform:none}}
+</style>
+    <script src="nexampay-core.js"></script>
+</head>
+<body>
+<main class="app">
+<header class="header">
+<button id="backButton" class="back" type="button">‹</button>
+<div class="header-title"><small>NEXAMPAY</small><strong>Carte virtuelle</strong></div>
+<button id="helpButton" class="header-action" type="button">?</button>
+</header>
+
+<section class="virtual-card">
+<div class="card-top"><div class="nexam-logo"><div class="np"><span>N</span><span>P</span></div><span class="virtual-text">VIRTUAL CARD</span></div><div class="contactless">)))</div></div>
+<div class="chip"></div>
+<div id="cardNumber" class="card-number">•••• •••• •••• ••••</div>
+<div class="card-info">
+<div><span class="info-label">TITULAIRE</span><span id="cardHolder" class="info-value">—</span></div>
+<div><span class="info-label">EXP</span><span id="cardExpiry" class="info-value">--/--</span></div>
+<div><span class="info-label">CVV</span><span id="cardCvv" class="info-value">•••</span></div>
+</div>
+</section>
+
+<section class="balance">
+<div class="balance-head"><span class="balance-label">Solde de la carte</span><span id="balanceCurrency" class="balance-currency">FCFA</span></div>
+<div id="cardBalance" class="balance-value">—</div>
+<div class="balance-sub">Disponible pour les paiements de la carte</div>
+</section>
+
+<section class="actions">
+<button id="detailsAction" class="action" type="button"><span class="action-icon">▣</span><span>Détails</span></button>
+<button id="showAction" class="action" type="button"><span class="action-icon">◉</span><span>Afficher</span></button>
+<button id="freezeAction" class="action" type="button"><span class="action-icon">✳</span><span>Geler</span></button>
+<button id="securityAction" class="action" type="button"><span class="action-icon">⚙</span><span>Sécurité</span></button>
+</section>
+
+<section class="options">
+<div class="option"><div class="option-icon">◇</div><div class="option-text"><strong>Paiements en ligne</strong><small>Autoriser les paiements en ligne</small></div><button id="onlineToggle" class="toggle active" type="button"></button></div>
+<div class="option"><div class="option-icon">$</div><div class="option-text"><strong>Retraits</strong><small>Autoriser les retraits avec la carte</small></div><button id="withdrawToggle" class="toggle active" type="button"></button></div>
+</section>
+
+<div class="state-message">Les informations réelles de la carte apparaîtront après la connexion du fournisseur de carte.</div>
+</main>
+
+<div id="layer" class="layer"><div id="backdrop" class="backdrop"></div><div class="sheet">
+<div class="sheet-head"><div><small>NEXAMPAY</small><h2 id="sheetTitle">Carte virtuelle</h2></div><button id="closeSheet" class="close" type="button">×</button></div>
+<div id="sheetContent"></div>
+</div></div>
+
+<script>
+"use strict";
+const state={card:null,numberVisible:false,cvvVisible:false,onlinePayments:true,withdrawals:true};
+
+function money(value,currency="FCFA"){if(value===null||value===undefined)return "—";return Number(value).toLocaleString("fr-FR")+" "+currency}
+function mask(number){if(!number)return "•••• •••• •••• ••••";const clean=String(number).replace(/\s/g,"");return clean.length>=4?"•••• •••• •••• "+clean.slice(-4):"•••• •••• •••• ••••"}
+function render(){
+    const c=state.card;
+    document.getElementById("cardNumber").textContent=c?(state.numberVisible?(c.card_number||mask(c.card_number)):mask(c.card_number)):"•••• •••• •••• ••••";
+    document.getElementById("cardHolder").textContent=c?.cardholder_name||"—";
+    document.getElementById("cardExpiry").textContent=c?.expiry||"--/--";
+    document.getElementById("cardCvv").textContent=c?(state.cvvVisible?(c.cvv||"—"):"•••"):"•••";
+    document.getElementById("cardBalance").textContent=c?money(c.balance,c.currency_code):"—";
+    document.getElementById("balanceCurrency").textContent=c?.currency_code||"FCFA";
+}
+function openSheet(title,html){document.getElementById("sheetTitle").textContent=title;document.getElementById("sheetContent").innerHTML=html;document.getElementById("layer").classList.add("open")}
+function closeSheet(){document.getElementById("layer").classList.remove("open")}
+
+document.getElementById("closeSheet").onclick=closeSheet;
+document.getElementById("backdrop").onclick=closeSheet;
+
+document.getElementById("detailsAction").onclick=()=>{
+    openSheet("Détails de la carte",state.card?
+    `<div class="row"><span>Numéro</span><span>${mask(state.card.card_number)}</span></div>
+     <div class="row"><span>Titulaire</span><span>${state.card.cardholder_name||"—"}</span></div>
+     <div class="row"><span>Expiration</span><span>${state.card.expiry||"--/--"}</span></div>
+     <div class="row"><span>CVV</span><span>•••</span></div>
+     <div class="notice">Les données sensibles seront affichées uniquement selon les règles de sécurité du fournisseur.</div>`
+    :`<div class="notice">Les détails réels apparaîtront après la connexion au fournisseur de carte.</div>`);
+};
+
+document.getElementById("showAction").onclick=()=>{
+    if(!state.card){openSheet("Afficher",`<div class="notice">Les données de la carte seront disponibles après la connexion au fournisseur.</div>`);return}
+    state.numberVisible=!state.numberVisible;state.cvvVisible=state.numberVisible;render();
+};
+
+document.getElementById("freezeAction").onclick=()=>{
+    openSheet("Geler la carte",`<div class="notice">Le gel réel sera relié à l'API du fournisseur de carte après son intégration.</div><button class="sheet-button" type="button" disabled>Disponible après connexion API</button>`);
+};
+
+document.getElementById("securityAction").onclick=()=>{
+    openSheet("Sécurité",`<div class="row"><span>Paiements en ligne</span><span>${state.onlinePayments?"Activés":"Désactivés"}</span></div><div class="row"><span>Retraits</span><span>${state.withdrawals?"Activés":"Désactivés"}</span></div><div class="notice">Les réglages seront synchronisés avec l'API de carte après son intégration.</div>`);
+};
+
+document.getElementById("onlineToggle").onclick=()=>{
+    state.onlinePayments=!state.onlinePayments;
+    document.getElementById("onlineToggle").classList.toggle("active",state.onlinePayments);
+};
+document.getElementById("withdrawToggle").onclick=()=>{
+    state.withdrawals=!state.withdrawals;
+    document.getElementById("withdrawToggle").classList.toggle("active",state.withdrawals);
+};
+document.getElementById("helpButton").onclick=()=>openSheet("Aide",`<div class="notice">Cette page est dédiée à la carte virtuelle NexamPay. Les fonctions réelles seront activées après intégration du fournisseur.</div>`);
+document.getElementById("backButton").onclick=()=>{window.location.href="index.html"};
+render();
+</script>
+</body>
+</html>

@@ -1,0 +1,3724 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    >
+
+    <meta
+        name="theme-color"
+        content="#050505"
+    >
+
+    <title>Dépôt — NexamPay</title>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="config.js"></script>
+    <script src="nexampay-core.js"></script>
+
+    <style>
+
+        :root {
+            --red: #e50914;
+            --red-light: #ff2934;
+            --red-dark: #98040b;
+
+            --black: #050505;
+            --black-2: #090909;
+            --black-3: #101010;
+            --black-4: #171717;
+
+            --white: #ffffff;
+            --muted: #777777;
+
+            --border:
+                rgba(255,255,255,.08);
+        }
+
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+
+            -webkit-tap-highlight-color:
+                transparent;
+        }
+
+
+        html,
+        body {
+
+            width: 100%;
+            min-height: 100%;
+
+            background:
+                var(--black);
+
+            color:
+                var(--white);
+
+            font-family:
+                Inter,
+                -apple-system,
+                BlinkMacSystemFont,
+                "Segoe UI",
+                Roboto,
+                Arial,
+                sans-serif;
+        }
+
+
+        body {
+            overflow-x: hidden;
+        }
+
+
+        button,
+        input {
+            font: inherit;
+        }
+
+
+        button {
+            outline: none;
+            border: 0;
+        }
+
+
+        .app {
+
+            width: 100%;
+            max-width: 540px;
+
+            min-height: 100vh;
+
+            margin: auto;
+
+            padding:
+                18px
+                17px
+                35px;
+        }
+
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        .top {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 25px;
+        }
+
+
+        .brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .back {
+
+            width: 43px;
+            height: 43px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #1d1d1d,
+                    #090909
+                );
+
+            border:
+                1px solid
+                var(--border);
+
+            color:
+                white;
+
+            font-size: 24px;
+
+            cursor: pointer;
+        }
+
+
+        .brand-text strong {
+
+            display: block;
+
+            font-size: 15px;
+        }
+
+
+        .brand-text small {
+
+            display: block;
+
+            margin-top: 3px;
+
+            color:
+                #666;
+
+            font-size: 8px;
+        }
+
+
+        .brand-logo {
+
+            width: 43px;
+            height: 43px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 14px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #1d1d1d,
+                    #090909
+                );
+
+            border:
+                1px solid
+                var(--border);
+
+            font-size: 17px;
+
+            font-weight: 950;
+
+            letter-spacing: -4px;
+
+            transform:
+                skewX(-7deg);
+        }
+
+
+        .brand-logo span:first-child {
+            color: white;
+        }
+
+
+        .brand-logo span:last-child {
+            color: var(--red);
+        }
+
+
+        .step-counter {
+
+            color:
+                #666;
+
+            font-size: 9px;
+        }
+
+
+        .step-counter strong {
+
+            color:
+                var(--red);
+
+            font-size: 14px;
+        }
+
+
+        /* =====================================================
+           PROGRESS
+        ===================================================== */
+
+        .progress {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 5px;
+
+            margin-bottom: 30px;
+        }
+
+
+        .progress span {
+
+            height: 3px;
+
+            border-radius: 99px;
+
+            background:
+                #1c1c1c;
+
+            transition:
+                .35s ease;
+        }
+
+
+        .progress span.active {
+
+            background:
+                var(--red);
+
+            box-shadow:
+                0 0 13px
+                rgba(229,9,20,.30);
+        }
+
+
+        /* =====================================================
+           STEPS
+        ===================================================== */
+
+        .step {
+            display: none;
+
+            animation:
+                stepIn
+                .42s
+                cubic-bezier(.2,.8,.2,1)
+                both;
+        }
+
+
+        .step.active {
+            display: block;
+        }
+
+
+        .eyebrow {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color:
+                var(--red);
+
+            font-size: 8px;
+
+            font-weight: 900;
+
+            letter-spacing: 1.8px;
+        }
+
+
+        .title {
+
+            font-size: 29px;
+
+            line-height: 1.05;
+
+            letter-spacing: -1.1px;
+        }
+
+
+        .description {
+
+            margin-top: 12px;
+
+            color:
+                var(--muted);
+
+            font-size: 11px;
+
+            line-height: 1.65;
+        }
+
+
+        /* =====================================================
+           CARD
+        ===================================================== */
+
+        .card {
+
+            position: relative;
+
+            overflow: hidden;
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            border-radius: 23px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #191919,
+                    #0b0b0b
+                );
+
+            border:
+                1px solid
+                var(--border);
+
+            box-shadow:
+                0 22px 60px
+                rgba(0,0,0,.45);
+        }
+
+
+        .card::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 190px;
+            height: 190px;
+
+            right: -90px;
+            top: -90px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(229,9,20,.15),
+                    transparent 70%
+                );
+
+            pointer-events: none;
+        }
+
+
+        .label {
+
+            display: block;
+
+            margin-bottom: 9px;
+
+            color:
+                #d3d3d3;
+
+            font-size: 10px;
+
+            font-weight: 700;
+        }
+
+
+        /* =====================================================
+           COUNTRY
+        ===================================================== */
+
+        .country-button {
+
+            width: 100%;
+
+            min-height: 68px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            padding:
+                11px 14px;
+
+            border-radius: 17px;
+
+            background:
+                #0d0d0d;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            color:
+                white;
+
+            text-align: left;
+
+            cursor: pointer;
+        }
+
+
+        .country-left {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+        }
+
+
+        .country-flag {
+
+            width: 43px;
+            height: 43px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                #191919;
+
+            font-size: 23px;
+        }
+
+
+        .country-name {
+
+            display: block;
+
+            font-size: 12px;
+
+            font-weight: 750;
+        }
+
+
+        .country-currency {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color:
+                #666;
+
+            font-size: 9px;
+        }
+
+
+        .arrow {
+
+            color:
+                #777;
+
+            font-size: 20px;
+        }
+
+
+        /* =====================================================
+           COUNTRY MODAL
+        ===================================================== */
+
+        .modal {
+
+            position: fixed;
+
+            inset: 0;
+
+            z-index: 10000;
+
+            display: none;
+
+            align-items: flex-end;
+        }
+
+
+        .modal.open {
+            display: flex;
+        }
+
+
+        .modal-backdrop {
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                rgba(0,0,0,.83);
+
+            backdrop-filter:
+                blur(9px);
+
+            -webkit-backdrop-filter:
+                blur(9px);
+        }
+
+
+        .sheet {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+
+            max-width: 540px;
+
+            max-height: 87vh;
+
+            margin: auto auto 0;
+
+            padding:
+                20px
+                17px
+                calc(
+                    20px +
+                    env(safe-area-inset-bottom)
+                );
+
+            border-radius:
+                28px
+                28px
+                0
+                0;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #181818,
+                    #070707
+                );
+
+            border-top:
+                1px solid
+                rgba(229,9,20,.20);
+
+            box-shadow:
+                0 -25px 80px
+                rgba(0,0,0,.8);
+
+            animation:
+                sheetIn
+                .32s
+                cubic-bezier(.2,.8,.2,1)
+                both;
+        }
+
+
+        .sheet-head {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            margin-bottom: 16px;
+        }
+
+
+        .sheet-head small {
+
+            display: block;
+
+            color:
+                var(--red);
+
+            font-size: 8px;
+
+            font-weight: 900;
+
+            letter-spacing: 2px;
+
+            margin-bottom: 5px;
+        }
+
+
+        .sheet-head h2 {
+            font-size: 20px;
+        }
+
+
+        .close {
+
+            width: 36px;
+            height: 36px;
+
+            border-radius: 12px;
+
+            background:
+                #171717;
+
+            color:
+                #aaa;
+
+            font-size: 22px;
+
+            cursor: pointer;
+        }
+
+
+        .search {
+
+            width: 100%;
+
+            height: 51px;
+
+            padding:
+                0 15px;
+
+            border-radius: 16px;
+
+            outline: none;
+
+            background:
+                #0d0d0d;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            color:
+                white;
+
+            font-size: 11px;
+        }
+
+
+        .country-list {
+
+            max-height: 57vh;
+
+            overflow-y: auto;
+
+            margin-top: 12px;
+
+            scrollbar-width: none;
+        }
+
+
+        .country-list::-webkit-scrollbar {
+            display: none;
+        }
+
+
+        .country-option {
+
+            width: 100%;
+
+            min-height: 65px;
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                10px 5px;
+
+            background:
+                transparent;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.055);
+
+            color:
+                white;
+
+            text-align: left;
+
+            cursor: pointer;
+        }
+
+
+        .country-option-flag {
+
+            width: 42px;
+            height: 42px;
+
+            flex: 0 0 42px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+
+            background:
+                #1a1a1a;
+
+            font-size: 23px;
+        }
+
+
+        .country-option-info {
+
+            min-width: 0;
+
+            flex: 1;
+        }
+
+
+        .country-option-name {
+
+            display: block;
+
+            overflow: hidden;
+
+            color:
+                #ededed;
+
+            font-size: 11px;
+
+            font-weight: 650;
+
+            white-space: nowrap;
+
+            text-overflow: ellipsis;
+        }
+
+
+        .country-option-currency {
+
+            display: block;
+
+            margin-top: 4px;
+
+            color:
+                #656565;
+
+            font-size: 9px;
+        }
+
+
+        .country-option-check {
+
+            width: 20px;
+            height: 20px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border:
+                1px solid
+                #555;
+
+            border-radius: 50%;
+        }
+
+
+        .country-option.selected
+        .country-option-check {
+
+            border-color:
+                var(--red);
+
+            background:
+                var(--red);
+
+            box-shadow:
+                0 0 12px
+                rgba(229,9,20,.28);
+        }
+
+
+        .country-option.selected
+        .country-option-check::after {
+
+            content: "";
+
+            width: 6px;
+            height: 6px;
+
+            border-radius: 50%;
+
+            background:
+                white;
+        }
+
+
+        /* =====================================================
+           NETWORK
+        ===================================================== */
+
+        .network-grid {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(2, 1fr);
+
+            gap: 10px;
+
+            margin-top: 24px;
+        }
+
+
+        .network {
+
+            position: relative;
+
+            min-height: 105px;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            gap: 9px;
+
+            border-radius: 19px;
+
+            background:
+                #111;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+
+            color:
+                white;
+
+            cursor: pointer;
+
+            transition:
+                transform .15s ease,
+                border-color .25s ease,
+                box-shadow .25s ease;
+        }
+
+
+        .network:active {
+
+            transform:
+                scale(.95);
+        }
+
+
+        .network.selected {
+
+            border-color:
+                var(--red);
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #1a1011,
+                    #0d0d0d
+                );
+
+            box-shadow:
+                0 0 28px
+                rgba(229,9,20,.13);
+        }
+
+
+        .network-logo {
+
+            width: 48px;
+            height: 48px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            overflow: hidden;
+
+            border-radius: 14px;
+
+            background:
+                #202020;
+
+            border:
+                1px solid
+                rgba(255,255,255,.07);
+        }
+
+
+        .network-logo img {
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: contain;
+
+            padding: 5px;
+        }
+
+
+        .network-fallback {
+
+            color:
+                var(--red);
+
+            font-size: 14px;
+
+            font-weight: 900;
+        }
+
+
+        .network-name {
+
+            max-width: 90%;
+
+            overflow: hidden;
+
+            text-overflow: ellipsis;
+
+            white-space: nowrap;
+
+            font-size: 9px;
+
+            font-weight: 700;
+        }
+
+
+        .network-check {
+
+            position: absolute;
+
+            top: 9px;
+            right: 9px;
+
+            width: 18px;
+            height: 18px;
+
+            border-radius: 50%;
+
+            border:
+                1px solid
+                #4d4d4d;
+        }
+
+
+        .network.selected
+        .network-check {
+
+            border-color:
+                var(--red);
+
+            background:
+                var(--red);
+        }
+
+
+        .network.selected
+        .network-check::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 5px;
+            height: 5px;
+
+            top: 50%;
+            left: 50%;
+
+            border-radius: 50%;
+
+            background:
+                white;
+
+            transform:
+                translate(-50%,-50%);
+        }
+
+
+        /* =====================================================
+           PHONE
+        ===================================================== */
+
+        .phone {
+
+            width: 100%;
+
+            height: 56px;
+
+            margin-top: 23px;
+
+            padding:
+                0 16px;
+
+            border-radius: 16px;
+
+            background:
+                #0d0d0d;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            outline: none;
+
+            color:
+                white;
+
+            font-size: 13px;
+        }
+
+
+        .phone:focus {
+
+            border-color:
+                rgba(229,9,20,.50);
+
+            box-shadow:
+                0 0 0 3px
+                rgba(229,9,20,.06);
+        }
+
+
+        /* =====================================================
+           AMOUNT
+        ===================================================== */
+
+        .amount-box {
+
+            margin-top: 24px;
+
+            padding: 23px 18px;
+
+            text-align: center;
+
+            border-radius: 22px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #171717,
+                    #0b0b0b
+                );
+
+            border:
+                1px solid
+                var(--border);
+        }
+
+
+        .amount-label {
+
+            color:
+                #707070;
+
+            font-size: 8px;
+
+            font-weight: 750;
+
+            letter-spacing: 1px;
+        }
+
+
+        .amount {
+
+            min-height: 47px;
+
+            margin-top: 9px;
+
+            font-size: 34px;
+
+            font-weight: 850;
+
+            letter-spacing: -1px;
+        }
+
+
+        .amount span {
+
+            color:
+                var(--red);
+
+            font-size: 11px;
+
+            font-weight: 750;
+        }
+
+
+        /* =====================================================
+           KEYBOARD
+        ===================================================== */
+
+        .keyboard {
+
+            display: grid;
+
+            grid-template-columns:
+                repeat(3,1fr);
+
+            gap: 8px;
+
+            margin-top: 15px;
+        }
+
+
+        .key {
+
+            height: 55px;
+
+            border-radius: 15px;
+
+            background:
+                #151515;
+
+            border:
+                1px solid
+                rgba(255,255,255,.06);
+
+            color:
+                white;
+
+            font-size: 18px;
+
+            font-weight: 650;
+
+            cursor: pointer;
+
+            transition:
+                transform .09s ease,
+                background .12s ease;
+        }
+
+
+        .key:active {
+
+            transform:
+                scale(.92);
+
+            background:
+                var(--red);
+        }
+
+
+        .key.zero {
+            grid-column: 2;
+        }
+
+
+        .key.delete {
+
+            color:
+                #aaa;
+
+            font-size: 15px;
+        }
+
+
+        /* =====================================================
+           SUMMARY
+        ===================================================== */
+
+        .summary {
+
+            margin-top: 25px;
+
+            padding: 18px;
+
+            border-radius: 21px;
+
+            background:
+                #101010;
+
+            border:
+                1px solid
+                var(--border);
+        }
+
+
+        .summary-row {
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding:
+                12px 0;
+
+            border-bottom:
+                1px solid
+                rgba(255,255,255,.05);
+        }
+
+
+        .summary-row:last-child {
+            border-bottom: 0;
+        }
+
+
+        .summary-row span:first-child {
+
+            color:
+                #707070;
+
+            font-size: 10px;
+        }
+
+
+        .summary-row span:last-child {
+
+            color:
+                white;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            text-align: right;
+        }
+
+
+        .summary-total {
+
+            margin-top: 10px;
+
+            padding-top: 17px;
+
+            border-top:
+                1px solid
+                rgba(255,255,255,.08);
+
+            text-align: center;
+        }
+
+
+        .summary-total small {
+
+            display: block;
+
+            color:
+                #707070;
+
+            font-size: 9px;
+        }
+
+
+        .summary-total strong {
+
+            display: block;
+
+            margin-top: 5px;
+
+            font-size: 28px;
+        }
+
+
+        .summary-total strong span {
+
+            color:
+                var(--red);
+
+            font-size: 11px;
+        }
+
+
+        /* =====================================================
+           WAITING
+        ===================================================== */
+
+        .waiting {
+
+            min-height: 70vh;
+
+            display: flex;
+
+            flex-direction: column;
+
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+        }
+
+
+        .orbit {
+
+            position: relative;
+
+            width: 125px;
+            height: 125px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+
+        .orbit::before,
+        .orbit::after {
+
+            content: "";
+
+            position: absolute;
+
+            border-radius: 50%;
+
+            border:
+                1px solid
+                rgba(229,9,20,.25);
+        }
+
+
+        .orbit::before {
+
+            inset: 5px;
+
+            border-top-color:
+                var(--red);
+
+            animation:
+                rotate
+                1s
+                linear
+                infinite;
+        }
+
+
+        .orbit::after {
+
+            inset: 18px;
+
+            border-bottom-color:
+                rgba(255,255,255,.3);
+
+            animation:
+                rotateReverse
+                1.8s
+                linear
+                infinite;
+        }
+
+
+        .orbit-logo {
+
+            width: 65px;
+            height: 65px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 20px;
+
+            background:
+                #111;
+
+            border:
+                1px solid
+                rgba(255,255,255,.08);
+
+            box-shadow:
+                0 0 35px
+                rgba(229,9,20,.14);
+
+            font-size: 25px;
+
+            font-weight: 950;
+
+            letter-spacing: -6px;
+
+            transform:
+                skewX(-7deg);
+        }
+
+
+        .orbit-logo span:first-child {
+            color: white;
+        }
+
+
+        .orbit-logo span:last-child {
+            color: var(--red);
+        }
+
+
+        .waiting h2 {
+
+            margin-top: 27px;
+
+            font-size: 23px;
+        }
+
+
+        .waiting p {
+
+            max-width: 315px;
+
+            margin-top: 10px;
+
+            color:
+                #777;
+
+            font-size: 11px;
+
+            line-height: 1.65;
+        }
+
+
+        .request-id {
+
+            margin-top: 18px;
+
+            padding:
+                10px 14px;
+
+            border-radius: 12px;
+
+            background:
+                #101010;
+
+            border:
+                1px solid
+                var(--border);
+
+            color:
+                #888;
+
+            font-size: 9px;
+        }
+
+
+        /* =====================================================
+           BUTTONS
+        ===================================================== */
+
+        .primary {
+
+            width: 100%;
+
+            height: 56px;
+
+            margin-top: 23px;
+
+            border-radius: 17px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    var(--red-light),
+                    var(--red-dark)
+                );
+
+            color:
+                white;
+
+            font-size: 11px;
+
+            font-weight: 800;
+
+            box-shadow:
+                0 14px 35px
+                rgba(229,9,20,.20);
+
+            cursor: pointer;
+        }
+
+
+        .primary:disabled {
+
+            opacity:
+                .38;
+
+            box-shadow:
+                none;
+
+            cursor:
+                not-allowed;
+        }
+
+
+        .secondary {
+
+            width: 100%;
+
+            height: 51px;
+
+            margin-top: 9px;
+
+            border-radius: 16px;
+
+            background:
+                #151515;
+
+            border:
+                1px solid
+                var(--border);
+
+            color:
+                #ddd;
+
+            font-size: 10px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .error {
+
+            min-height: 18px;
+
+            margin-top: 10px;
+
+            color:
+                #ff4d56;
+
+            font-size: 9px;
+
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           ANIMATIONS
+        ===================================================== */
+
+        @keyframes stepIn {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(18px)
+                    scale(.98);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0)
+                    scale(1);
+            }
+        }
+
+
+        @keyframes sheetIn {
+
+            from {
+
+                opacity: 0;
+
+                transform:
+                    translateY(100%);
+            }
+
+            to {
+
+                opacity: 1;
+
+                transform:
+                    translateY(0);
+            }
+        }
+
+
+        @keyframes rotate {
+
+            to {
+
+                transform:
+                    rotate(360deg);
+            }
+        }
+
+
+        @keyframes rotateReverse {
+
+            to {
+
+                transform:
+                    rotate(-360deg);
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<main class="app">
+
+
+    <!-- =====================================================
+         HEADER
+    ===================================================== -->
+
+    <header class="top">
+
+        <div class="brand">
+
+            <button
+                id="backButton"
+                class="back"
+                type="button"
+                aria-label="Retour"
+            >
+                ‹
+            </button>
+
+
+            <div class="brand-logo">
+
+                <span>N</span>
+                <span>P</span>
+
+            </div>
+
+
+            <div class="brand-text">
+
+                <strong>
+                    NexamPay
+                </strong>
+
+                <small>
+                    Dépôt sécurisé
+                </small>
+
+            </div>
+
+        </div>
+
+
+        <div class="step-counter">
+
+            <strong id="currentStep">
+                1
+            </strong>
+
+            / 4
+
+        </div>
+
+    </header>
+
+
+    <!-- =====================================================
+         PROGRESSION
+    ===================================================== -->
+
+    <div class="progress">
+
+        <span
+            id="progress1"
+            class="active"
+        ></span>
+
+        <span id="progress2"></span>
+
+        <span id="progress3"></span>
+
+        <span id="progress4"></span>
+
+    </div>
+
+
+    <!-- =====================================================
+         ÉTAPE 1 — PAYS
+    ===================================================== -->
+
+    <section
+        id="step1"
+        class="step active"
+    >
+
+        <span class="eyebrow">
+            ÉTAPE 01
+        </span>
+
+
+        <h1 class="title">
+            Choisis ton<br>
+            pays.
+        </h1>
+
+
+        <p class="description">
+            Sélectionne le pays associé à ton
+            portefeuille Mobile Money.
+        </p>
+
+
+        <div class="card">
+
+            <span class="label">
+                PAYS
+            </span>
+
+
+            <button
+                id="countryButton"
+                class="country-button"
+                type="button"
+            >
+
+                <div class="country-left">
+
+                    <span
+                        id="countryFlag"
+                        class="country-flag"
+                    ></span>
+
+
+                    <div>
+
+                        <strong
+                            id="countryName"
+                            class="country-name"
+                        ></strong>
+
+
+                        <small
+                            id="countryCurrency"
+                            class="country-currency"
+                        ></small>
+
+                    </div>
+
+                </div>
+
+
+                <span class="arrow">
+                    ›
+                </span>
+
+            </button>
+
+        </div>
+
+
+        <button
+            id="countryNext"
+            class="primary"
+            type="button"
+            disabled
+        >
+            Continuer
+        </button>
+
+
+        <div
+            id="countryError"
+            class="error"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ÉTAPE 2 — RÉSEAU
+    ===================================================== -->
+
+    <section
+        id="step2"
+        class="step"
+    >
+
+        <span class="eyebrow">
+            ÉTAPE 02
+        </span>
+
+
+        <h1 class="title">
+            Choisis ton<br>
+            réseau.
+        </h1>
+
+
+        <p class="description">
+            Sélectionne le réseau Mobile Money
+            disponible dans ton pays.
+        </p>
+
+
+        <div
+            id="networkGrid"
+            class="network-grid"
+        ></div>
+
+
+        <button
+            id="networkNext"
+            class="primary"
+            type="button"
+            disabled
+        >
+            Continuer
+        </button>
+
+
+        <button
+            id="networkBack"
+            class="secondary"
+            type="button"
+        >
+            Retour
+        </button>
+
+
+        <div
+            id="networkError"
+            class="error"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ÉTAPE 3 — NUMÉRO + MONTANT
+    ===================================================== -->
+
+    <section
+        id="step3"
+        class="step"
+    >
+
+        <span class="eyebrow">
+            ÉTAPE 03
+        </span>
+
+
+        <h1 class="title">
+            Entre les<br>
+            informations.
+        </h1>
+
+
+        <p class="description">
+            Indique le numéro Mobile Money
+            et le montant à déposer.
+        </p>
+
+
+        <input
+            id="phoneInput"
+            class="phone"
+            type="tel"
+            inputmode="tel"
+            autocomplete="tel"
+        >
+
+
+        <div class="amount-box">
+
+            <div class="amount-label">
+                MONTANT DU DÉPÔT
+            </div>
+
+
+            <div class="amount">
+
+                <span
+                    id="amountValue"
+                ></span>
+
+                <span
+                    id="amountCurrency"
+                ></span>
+
+            </div>
+
+        </div>
+
+
+        <div class="keyboard">
+
+            <button
+                class="key"
+                data-key="1"
+                type="button"
+            >1</button>
+
+            <button
+                class="key"
+                data-key="2"
+                type="button"
+            >2</button>
+
+            <button
+                class="key"
+                data-key="3"
+                type="button"
+            >3</button>
+
+            <button
+                class="key"
+                data-key="4"
+                type="button"
+            >4</button>
+
+            <button
+                class="key"
+                data-key="5"
+                type="button"
+            >5</button>
+
+            <button
+                class="key"
+                data-key="6"
+                type="button"
+            >6</button>
+
+            <button
+                class="key"
+                data-key="7"
+                type="button"
+            >7</button>
+
+            <button
+                class="key"
+                data-key="8"
+                type="button"
+            >8</button>
+
+            <button
+                class="key"
+                data-key="9"
+                type="button"
+            >9</button>
+
+            <button
+                class="key zero"
+                data-key="0"
+                type="button"
+            >0</button>
+
+            <button
+                class="key delete"
+                data-key="delete"
+                type="button"
+            >⌫</button>
+
+        </div>
+
+
+        <button
+            id="amountNext"
+            class="primary"
+            type="button"
+            disabled
+        >
+            Continuer
+        </button>
+
+
+        <button
+            id="amountBack"
+            class="secondary"
+            type="button"
+        >
+            Retour
+        </button>
+
+
+        <div
+            id="amountError"
+            class="error"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ÉTAPE 4 — CONFIRMATION
+    ===================================================== -->
+
+    <section
+        id="step4"
+        class="step"
+    >
+
+        <span class="eyebrow">
+            ÉTAPE 04
+        </span>
+
+
+        <h1 class="title">
+            Vérifie ton<br>
+            dépôt.
+        </h1>
+
+
+        <p class="description">
+            Vérifie les informations avant
+            d'envoyer ta demande.
+        </p>
+
+
+        <div class="summary">
+
+            <div class="summary-row">
+
+                <span>
+                    Pays
+                </span>
+
+                <span
+                    id="summaryCountry"
+                ></span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Réseau
+                </span>
+
+                <span
+                    id="summaryNetwork"
+                ></span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Numéro
+                </span>
+
+                <span
+                    id="summaryPhone"
+                ></span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Montant
+                </span>
+
+                <span
+                    id="summaryAmount"
+                ></span>
+
+            </div>
+
+
+            <div class="summary-row">
+
+                <span>
+                    Frais NexamPay
+                </span>
+
+                <span
+                    id="summaryFee"
+                ></span>
+
+            </div>
+
+
+            <div class="summary-total">
+
+                <small>
+                    TOTAL
+                </small>
+
+
+                <strong>
+
+                    <span
+                        id="summaryTotal"
+                    ></span>
+
+                    <span
+                        id="summaryCurrency"
+                    ></span>
+
+                </strong>
+
+            </div>
+
+        </div>
+
+
+        <button
+            id="confirmDeposit"
+            class="primary"
+            type="button"
+        >
+            Confirmer le dépôt
+        </button>
+
+
+        <button
+            id="confirmationBack"
+            class="secondary"
+            type="button"
+        >
+            Modifier
+        </button>
+
+
+        <div
+            id="confirmError"
+            class="error"
+        ></div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ATTENTE
+    ===================================================== -->
+
+    <section
+        id="waitingStep"
+        class="step"
+    >
+
+        <div class="waiting">
+
+            <div class="orbit">
+
+                <div class="orbit-logo">
+
+                    <span>N</span>
+                    <span>P</span>
+
+                </div>
+
+            </div>
+
+
+            <h2>
+                Validation en cours
+            </h2>
+
+
+            <p>
+                Ta demande de dépôt a été envoyée.
+                Elle reste en attente de validation.
+            </p>
+
+
+            <div
+                id="depositId"
+                class="request-id"
+            ></div>
+
+
+            <button
+                id="waitingHome"
+                class="secondary"
+                type="button"
+            >
+                Retour à l'accueil
+            </button>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<!-- =====================================================
+     COUNTRY MODAL
+===================================================== -->
+
+<div
+    id="countryModal"
+    class="modal"
+>
+
+</div>
+
+
+<script>
+
+"use strict";
+
+
+/* =====================================================
+   CONFIGURATION
+===================================================== */
+
+const API_BASE_URL =
+    "https://nexampay-backend.onrender.com/api/v1";
+
+
+/* =====================================================
+   TELEGRAM
+===================================================== */
+
+const tg =
+    window.Telegram?.WebApp ||
+    null;
+
+
+/* =====================================================
+   SESSION
+===================================================== */
+
+const sessionToken =
+    localStorage.getItem(
+        "nexampay_session_token"
+    );
+
+
+/* =====================================================
+   ÉTAT
+===================================================== */
+
+const state = {
+
+    step: 1,
+
+    countries: [],
+
+    networks: [],
+
+    country: null,
+
+    network: null,
+
+    phone: "",
+
+    amount: "",
+
+    deposit: null
+
+};
+
+
+/* =====================================================
+   TELEGRAM
+===================================================== */
+
+function initializeTelegram() {
+
+    if (!tg) {
+        return;
+    }
+
+
+    try {
+
+        tg.ready();
+
+        tg.expand();
+
+        tg.setBackgroundColor(
+            "#050505"
+        );
+
+        tg.setHeaderColor(
+            "#050505"
+        );
+
+        if (
+            tg.disableVerticalSwipes
+        ) {
+
+            tg.disableVerticalSwipes();
+
+        }
+
+    } catch (error) {
+
+        console.warn(
+            "Telegram WebApp:",
+            error
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   API
+===================================================== */
+
+async function apiRequest(
+    path,
+    options = {}
+) {
+
+    if (!sessionToken) {
+
+        throw new Error(
+            "Session NexamPay indisponible."
+        );
+
+    }
+
+
+    const response =
+        await fetch(
+            `${API_BASE_URL}${path}`,
+            {
+
+                ...options,
+
+                headers: {
+
+                    "Accept":
+                        "application/json",
+
+                    "Content-Type":
+                        "application/json",
+
+                    "Authorization":
+                        `Bearer ${sessionToken}`,
+
+                    ...(options.headers || {})
+
+                }
+
+            }
+        );
+
+
+    let data = null;
+
+
+    try {
+
+        data =
+            await response.json();
+
+    } catch (_) {
+
+        data = null;
+
+    }
+
+
+    if (!response.ok) {
+
+        throw new Error(
+            data?.detail ||
+            `Erreur serveur (${response.status}).`
+        );
+
+    }
+
+
+    return data;
+
+}
+
+
+/* =====================================================
+   ESCAPE
+===================================================== */
+
+function escapeHTML(
+    value
+) {
+
+    return String(
+        value ?? ""
+    )
+        .replace(
+            /&/g,
+            "&amp;"
+        )
+        .replace(
+            /</g,
+            "&lt;"
+        )
+        .replace(
+            />/g,
+            "&gt;"
+        )
+        .replace(
+            /"/g,
+            "&quot;"
+        )
+        .replace(
+            /'/g,
+            "&#039;"
+        );
+
+}
+
+
+/* =====================================================
+   FLAG
+===================================================== */
+
+function countryFlag(
+    code
+) {
+
+    if (!code) {
+        return "";
+    }
+
+
+    return String(
+        code
+    )
+        .toUpperCase()
+        .split("")
+        .map(
+            letter =>
+                String.fromCodePoint(
+                    127397 +
+                    letter.charCodeAt(0)
+                )
+        )
+        .join("");
+
+}
+
+
+/* =====================================================
+   PAYS
+===================================================== */
+
+async function loadCountries() {
+
+    const data =
+        await apiRequest(
+            "/countries"
+        );
+
+
+    state.countries =
+        (Array.isArray(data?.items) ? data.items : Array.isArray(data) ? data : [])
+            .map(c => window.NexamPayCore?.normalizeCountry ? window.NexamPayCore.normalizeCountry(c) : c);
+
+}
+
+
+function openCountryPicker() {
+
+    const modal =
+        document.getElementById(
+            "countryModal"
+        );
+
+
+    modal.innerHTML = `
+
+        <div
+            class="modal-backdrop"
+            id="countryBackdrop"
+        ></div>
+
+
+        <div class="sheet">
+
+            <div class="sheet-head">
+
+                <div>
+
+                    <small>
+                        NEXAMPAY
+                    </small>
+
+                    <h2>
+                        Sélectionner un pays
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="closeCountry"
+                    class="close"
+                    type="button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <input
+                id="countrySearch"
+                class="search"
+                type="search"
+                autocomplete="off"
+            >
+
+
+            <div
+                id="countryList"
+                class="country-list"
+            ></div>
+
+        </div>
+
+    `;
+
+
+    modal.classList.add(
+        "open"
+    );
+
+
+    renderCountryList("");
+
+
+    document
+        .getElementById(
+            "closeCountry"
+        )
+        .addEventListener(
+            "click",
+            closeCountryPicker
+        );
+
+
+    document
+        .getElementById(
+            "countryBackdrop"
+        )
+        .addEventListener(
+            "click",
+            closeCountryPicker
+        );
+
+
+    document
+        .getElementById(
+            "countrySearch"
+        )
+        .addEventListener(
+            "input",
+            event => {
+
+                renderCountryList(
+                    event.target.value
+                );
+
+            }
+        );
+
+}
+
+
+function closeCountryPicker() {
+
+    document
+        .getElementById(
+            "countryModal"
+        )
+        .classList.remove(
+            "open"
+        );
+
+}
+
+
+function renderCountryList(
+    search
+) {
+
+    const list =
+        document.getElementById(
+            "countryList"
+        );
+
+
+    const query =
+        String(
+            search || ""
+        )
+            .trim()
+            .toLowerCase();
+
+
+    const countries =
+        state.countries.filter(
+            country => {
+
+                return (
+
+                    String(
+                        country.name
+                    )
+                        .toLowerCase()
+                        .includes(query)
+
+                    ||
+
+                    String(
+                        country.code
+                    )
+                        .toLowerCase()
+                        .includes(query)
+
+                    ||
+
+                    String(
+                        country.currency_code
+                    )
+                        .toLowerCase()
+                        .includes(query)
+
+                );
+
+            }
+        );
+
+
+    list.innerHTML =
+        countries
+            .map(
+                country => `
+
+                    <button
+                        type="button"
+                        class="country-option"
+                        data-id="${country.id}"
+                    >
+
+                        <span class="country-option-flag">
+                            ${country.logo ? `<img src="${escapeHTML(country.logo)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:13px" onerror="this.onerror=null;this.parentElement.textContent='${countryFlag(country.flag_code || country.code)}';">` : countryFlag(country.flag_code || country.code)}
+                        </span>
+
+
+                        <span
+                            class="country-option-info"
+                        >
+
+                            <strong
+                                class="country-option-name"
+                            >
+                                ${escapeHTML(
+                                    country.name
+                                )}
+                            </strong>
+
+
+                            <small
+                                class="country-option-currency"
+                            >
+                                ${escapeHTML(
+                                    country.currency_code
+                                )}
+                            </small>
+
+                        </span>
+
+
+                        <span
+                            class="country-option-check"
+                        ></span>
+
+                    </button>
+
+                `
+            )
+            .join("");
+
+
+    list
+        .querySelectorAll(
+            ".country-option"
+        )
+        .forEach(
+            button => {
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        selectCountry(
+                            Number(
+                                button.dataset.id
+                            )
+                        );
+
+                    }
+                );
+
+            }
+        );
+
+}
+
+
+async function selectCountry(
+    id
+) {
+
+    const country =
+        state.countries.find(
+            item =>
+                Number(item.id) ===
+                Number(id)
+        );
+
+
+    if (!country) {
+        return;
+    }
+
+
+    state.country =
+        country;
+
+
+    const selectedFlag = document.getElementById("countryFlag");
+    if (country.logo) {
+        selectedFlag.innerHTML = `<img src="${escapeHTML(country.logo)}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:13px" onerror="this.onerror=null;this.parentElement.textContent='${countryFlag(country.flag_code || country.code)}';">`;
+    } else {
+        selectedFlag.textContent = countryFlag(country.flag_code || country.code);
+    }
+
+
+    document
+        .getElementById(
+            "countryName"
+        )
+        .textContent =
+        country.name;
+
+
+    document
+        .getElementById(
+            "countryCurrency"
+        )
+        .textContent =
+        country.currency_code;
+
+
+    closeCountryPicker();
+
+
+    await loadNetworks(
+        country.id
+    );
+
+
+    document
+        .getElementById(
+            "countryNext"
+        )
+        .disabled =
+        false;
+
+}
+
+
+/* =====================================================
+   RÉSEAUX
+===================================================== */
+
+async function loadNetworks(
+    countryId
+) {
+
+    const grid =
+        document.getElementById(
+            "networkGrid"
+        );
+
+
+    state.network =
+        null;
+
+
+    document
+        .getElementById(
+            "networkNext"
+        )
+        .disabled =
+        true;
+
+
+    grid.innerHTML = "";
+
+
+    try {
+
+        const data =
+            await apiRequest(
+                `/mobile-money/networks/${countryId}`
+            );
+
+
+        state.networks =
+            (Array.isArray(data?.items) ? data.items : Array.isArray(data?.networks) ? data.networks : Array.isArray(data) ? data : [])
+                .map(n => window.NexamPayCore?.normalizeNetwork ? window.NexamPayCore.normalizeNetwork(n) : n);
+
+
+        state.networks.forEach(
+            network => {
+
+                const button =
+                    document.createElement(
+                        "button"
+                    );
+
+
+                button.type =
+                    "button";
+
+
+                button.className =
+                    "network";
+
+
+                button.innerHTML = `
+
+                    <span
+                        class="network-logo"
+                    >
+
+                        ${
+                            (network.logo_url || network.logo)
+                            ?
+                            `
+                                <img
+                                    src="${escapeHTML(
+                                        network.logo_url || network.logo
+                                    )}"
+                                    alt=""
+                                    loading="lazy"
+                                >
+                            `
+                            :
+                            `
+                                <span
+                                    class="network-fallback"
+                                >
+                                    ${escapeHTML(
+                                        String(
+                                            network.name
+                                        )
+                                            .charAt(0)
+                                            .toUpperCase()
+                                    )}
+                                </span>
+                            `
+                        }
+
+                    </span>
+
+
+                    <span
+                        class="network-name"
+                    >
+                        ${escapeHTML(
+                            network.name
+                        )}
+                    </span>
+
+
+                    <span
+                        class="network-check"
+                    ></span>
+
+                `;
+
+
+                button.addEventListener(
+                    "click",
+                    () => {
+
+                        document
+                            .querySelectorAll(
+                                ".network"
+                            )
+                            .forEach(
+                                item =>
+                                    item.classList
+                                        .remove(
+                                            "selected"
+                                        )
+                            );
+
+
+                        button.classList.add(
+                            "selected"
+                        );
+
+
+                        state.network =
+                            network;
+
+
+                        document
+                            .getElementById(
+                                "networkNext"
+                            )
+                            .disabled =
+                            false;
+
+                    }
+                );
+
+
+                grid.appendChild(
+                    button
+                );
+
+            }
+        );
+
+
+    } catch (error) {
+
+        showError(
+            "networkError",
+            error.message
+        );
+
+    }
+
+}
+
+
+/* =====================================================
+   FRAIS NEXAMPAY
+   RÈGLE VALIDÉE :
+   < 1000 = gratuit
+   >= 1000 = 3 %
+===================================================== */
+
+function calculateDepositFee(
+    amount
+) {
+
+    const value =
+        Number(
+            amount || 0
+        );
+
+
+    if (
+        value < 1000
+    ) {
+
+        return 0;
+
+    }
+
+
+    return Number(
+        (
+            value * 0.03
+        ).toFixed(2)
+    );
+
+}
+
+
+/* =====================================================
+   FORMAT ARGENT
+===================================================== */
+
+function formatMoney(
+    value
+) {
+
+    return Number(
+        value || 0
+    ).toLocaleString(
+        "fr-FR",
+        {
+            maximumFractionDigits: 2
+        }
+    );
+
+}
+
+
+/* =====================================================
+   MONTANT
+===================================================== */
+
+function updateAmount() {
+
+    const value =
+        Number(
+            state.amount || 0
+        );
+
+
+    const currency =
+        state.country?.currency_code ||
+        "";
+
+
+    document
+        .getElementById(
+            "amountValue"
+        )
+        .textContent =
+        value
+            ? formatMoney(value)
+            : "";
+
+
+    document
+        .getElementById(
+            "amountCurrency"
+        )
+        .textContent =
+        value
+            ? currency
+            : "";
+
+
+    validateAmount();
+
+}
+
+
+function validateAmount() {
+
+    const valid =
+        state.phone.trim().length >= 6
+        &&
+        Number(state.amount) > 0;
+
+
+    document
+        .getElementById(
+            "amountNext"
+        )
+        .disabled =
+        !valid;
+
+}
+
+
+/* =====================================================
+   CLAVIER
+===================================================== */
+
+document
+    .querySelectorAll(
+        ".key"
+    )
+    .forEach(
+        key => {
+
+            key.addEventListener(
+                "click",
+                () => {
+
+                    const value =
+                        key.dataset.key;
+
+
+                    if (
+                        value ===
+                        "delete"
+                    ) {
+
+                        state.amount =
+                            state.amount.slice(
+                                0,
+                                -1
+                            );
+
+                    } else {
+
+                        if (
+                            state.amount.length
+                            >= 10
+                        ) {
+
+                            return;
+
+                        }
+
+
+                        state.amount +=
+                            value;
+
+                    }
+
+
+                    updateAmount();
+
+                }
+            );
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "phoneInput"
+    )
+    .addEventListener(
+        "input",
+        event => {
+
+            state.phone =
+                event.target.value
+                    .trim();
+
+
+            validateAmount();
+
+        }
+    );
+
+
+/* =====================================================
+   RÉSUMÉ
+===================================================== */
+
+function renderSummary() {
+
+    const amount =
+        Number(
+            state.amount
+        );
+
+
+    const fee =
+        calculateDepositFee(
+            amount
+        );
+
+
+    const total =
+        amount + fee;
+
+
+    const currency =
+        state.country?.currency_code ||
+        "";
+
+
+    document
+        .getElementById(
+            "summaryCountry"
+        )
+        .textContent =
+        state.country?.name ||
+        "";
+
+
+    document
+        .getElementById(
+            "summaryNetwork"
+        )
+        .textContent =
+        state.network?.name ||
+        "";
+
+
+    document
+        .getElementById(
+            "summaryPhone"
+        )
+        .textContent =
+        state.phone;
+
+
+    document
+        .getElementById(
+            "summaryAmount"
+        )
+        .textContent =
+        `${formatMoney(
+            amount
+        )} ${currency}`;
+
+
+    document
+        .getElementById(
+            "summaryFee"
+        )
+        .textContent =
+        `${formatMoney(
+            fee
+        )} ${currency}`;
+
+
+    document
+        .getElementById(
+            "summaryTotal"
+        )
+        .textContent =
+        formatMoney(
+            total
+        );
+
+
+    document
+        .getElementById(
+            "summaryCurrency"
+        )
+        .textContent =
+        currency;
+
+}
+
+
+/* =====================================================
+   NAVIGATION
+===================================================== */
+
+function showStep(
+    step
+) {
+
+    document
+        .querySelectorAll(
+            ".step"
+        )
+        .forEach(
+            section =>
+                section.classList
+                    .remove(
+                        "active"
+                    )
+        );
+
+
+    const target =
+        step >= 5
+            ? document.getElementById(
+                "waitingStep"
+            )
+            : document.getElementById(
+                `step${step}`
+            );
+
+
+    if (!target) {
+        return;
+    }
+
+
+    target.classList.add(
+        "active"
+    );
+
+
+    state.step =
+        step;
+
+
+    document
+        .getElementById(
+            "currentStep"
+        )
+        .textContent =
+        step >= 4
+            ? 4
+            : step;
+
+
+    [
+        "progress1",
+        "progress2",
+        "progress3",
+        "progress4"
+    ]
+        .forEach(
+            (id, index) => {
+
+                document
+                    .getElementById(
+                        id
+                    )
+                    .classList
+                    .toggle(
+                        "active",
+                        step >= index + 1
+                    );
+
+            }
+        );
+
+
+    window.scrollTo({
+        top: 0,
+        behavior: "smooth"
+    });
+
+}
+
+
+/* =====================================================
+   CRÉATION DU DÉPÔT
+===================================================== */
+
+async function createDeposit() {
+
+    clearError(
+        "confirmError"
+    );
+
+
+    const button =
+        document.getElementById(
+            "confirmDeposit"
+        );
+
+
+    button.disabled =
+        true;
+
+
+    button.textContent =
+        "Envoi de la demande…";
+
+
+    try {
+
+        const response =
+            await apiRequest(
+                "/deposits",
+                {
+
+                    method:
+                        "POST",
+
+                    body:
+                        JSON.stringify({
+
+                            country_id:
+                                Number(
+                                    state.country.id
+                                ),
+
+                            network_id:
+                                Number(
+                                    state.network.id
+                                ),
+
+                            phone_number:
+                                state.phone,
+
+                            amount:
+                                Number(
+                                    state.amount
+                                )
+
+                        })
+
+                }
+            );
+
+
+        state.deposit =
+            response;
+
+
+        document
+            .getElementById(
+                "depositId"
+            )
+            .textContent =
+            response.deposit_id ||
+            "";
+
+
+        showStep(5);
+
+
+    } catch (error) {
+
+        showError(
+            "confirmError",
+            error.message
+        );
+
+
+        button.disabled =
+            false;
+
+
+        button.textContent =
+            "Confirmer le dépôt";
+
+    }
+
+}
+
+
+/* =====================================================
+   ERREUR
+===================================================== */
+
+function showError(
+    id,
+    message
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            message || "";
+
+    }
+
+}
+
+
+function clearError(
+    id
+) {
+
+    const element =
+        document.getElementById(
+            id
+        );
+
+
+    if (element) {
+
+        element.textContent =
+            "";
+
+    }
+
+}
+
+
+/* =====================================================
+   EVENTS
+===================================================== */
+
+document
+    .getElementById(
+        "countryButton"
+    )
+    .addEventListener(
+        "click",
+        openCountryPicker
+    );
+
+
+document
+    .getElementById(
+        "countryNext"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            if (
+                state.country
+            ) {
+
+                showStep(2);
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "networkNext"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            if (
+                state.network
+            ) {
+
+                showStep(3);
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "networkBack"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showStep(1);
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "amountNext"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            renderSummary();
+
+            showStep(4);
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "amountBack"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showStep(2);
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "confirmationBack"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            showStep(3);
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "confirmDeposit"
+    )
+    .addEventListener(
+        "click",
+        createDeposit
+    );
+
+
+document
+    .getElementById(
+        "backButton"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+document
+    .getElementById(
+        "waitingHome"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            window.location.href =
+                "index.html";
+
+        }
+    );
+
+
+/* =====================================================
+   INITIALISATION
+===================================================== */
+
+async function initialize() {
+
+    initializeTelegram();
+
+
+    if (!sessionToken) {
+
+        window.location.replace(
+            "index.html"
+        );
+
+        return;
+
+    }
+
+
+    try {
+
+        await loadCountries();
+
+    } catch (error) {
+
+        showError(
+            "countryError",
+            error.message
+        );
+
+    }
+
+}
+
+
+if (
+    document.readyState ===
+    "loading"
+) {
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        initialize,
+        {
+            once: true
+        }
+    );
+
+} else {
+
+    initialize();
+
+}
+
+</script>
+
+</body>
+
+</html>
